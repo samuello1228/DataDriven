@@ -1,3 +1,7 @@
+// Author:     mat@ihep.ac.cn
+// Date  :     May 11, 2018 
+// Descrption: It is used for selecting Z->ee control samples which will be used to determine charge-flip rates
+
 #include "TChain.h"
 #include "TROOT.h"
 #include "TFile.h"
@@ -81,7 +85,6 @@ double howNear(const TLorentzVector &w1, const TLorentzVector &w2);
 int    match(susyEvts *mEvts, int i);
 int    preJudge(susyEvts *mEvts, int i, int j, int &t_char_1, int &t_char_2);
 //-----------------------------------
-
 
 int main(int argc, char* argv[])
 {
