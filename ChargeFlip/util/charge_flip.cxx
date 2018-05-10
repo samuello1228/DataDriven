@@ -1,7 +1,9 @@
-// Author:     mat@ihep.ac.cn
-// Date  :     May 11, 2018 
+// Author    : mat@ihep.ac.cn
+// Date      : May 11, 2018 
 // Descrption: It is used for selecting Z->ee control samples which will be used to determine charge-flip rates
-
+// Inputs    : ROOT files pre-selected by multiLepSearch package (see https://gitlab.cern.ch/hku/SUSY2L/tree/master/code/multiLepSearch)
+// Output    : .cvs files which record the numbers of events in each (pt, eta) bin with or without side-band substraction method
+//           : .root file which stores the corresponding histograms in the selection procedure
 #include "TChain.h"
 #include "TROOT.h"
 #include "TFile.h"
