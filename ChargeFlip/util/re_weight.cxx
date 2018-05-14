@@ -1,3 +1,9 @@
+// Author    : mat@ihep.ac.cn
+// Date      : May 13, 2018 
+// Descrption: It is used to re-weigh the selcected Z->ee control samples by using opposite-sign ee events to predict same-sign ee events
+// Inputs    : ROOT files pre-selected by multiLepSearch package (see https://gitlab.cern.ch/hku/SUSY2L/tree/master/code/multiLepSearch)
+// Outputs   : .root file which stores the corresponding histograms with calculated weights 
+//           : locate at the directory of ../run/checks_weight
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -227,10 +233,6 @@ void processEvents(
 		if (!((mEvts->leps[0].lFlag & 2)/2)) continue;
 		if (!((mEvts->leps[1].lFlag & 2)/2)) continue;
 		if (is_out_eta_pt(fabs(e1_eta), e1_pt, fabs(e2_eta), e2_pt, MINETA, MAXETA, MINPT, MAXPT)) continue;
-		//if (isData) //blind analysis
-		//{
-		//	if (mll < 80 || mll > 100) continue;
-		//}
 		num[1]++;
 
 		bid1 = bin_id(eta_bin(fabs(e1_eta)), pt_bin(e1_pt), NPT);

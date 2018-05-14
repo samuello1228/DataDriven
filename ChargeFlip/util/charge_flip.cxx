@@ -3,7 +3,9 @@
 // Descrption: It is used for selecting Z->ee control samples which will be used to determine charge-flip rates
 // Inputs    : ROOT files pre-selected by multiLepSearch package (see https://gitlab.cern.ch/hku/SUSY2L/tree/master/code/multiLepSearch)
 // Output    : .cvs files which record the numbers of events in each (pt, eta) bin with or without side-band substraction method
+//           : locate at the directory of ../run/csv
 //           : .root file which stores the corresponding histograms in the selection procedure
+//           : locate at the directory of ../run/checks
 #include "TChain.h"
 #include "TROOT.h"
 #include "TFile.h"
@@ -423,10 +425,10 @@ void processEvents(string outFile,
 		hNflipped->Write();
 		hN->Write();
 
-		cout << "monitor number: " << n_monitor << endl;
-		ofstream fm("../run/csv/mc_monitor.txt");
-		fm << monitor.str();
-		fm.close();
+		//cout << "monitor number: " << n_monitor << endl;
+		//ofstream fm("../run/csv/mc_monitor.txt");
+		//fm << monitor.str();
+		//fm.close();
 	}
 
 	for (unsigned int i = 0; i < 12; i++)
