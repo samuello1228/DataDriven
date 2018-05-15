@@ -2,7 +2,7 @@
 // Date      : May 11, 2018 
 // Descrption: It is used for selecting Z->ee control samples which will be used to determine charge-flip rates
 // Inputs    : ROOT files pre-selected by multiLepSearch package (see https://gitlab.cern.ch/hku/SUSY2L/tree/master/code/multiLepSearch)
-// Output    : .cvs files which record the numbers of events in each (pt, eta) bin with or without side-band substraction method
+// Outputs   : .cvs files which record the numbers of events in each (pt, eta) bin with or without side-band substraction method
 //           : locate at the directory of ../run/csv
 //           : .root file which stores the corresponding histograms in the selection procedure
 //           : locate at the directory of ../run/checks
