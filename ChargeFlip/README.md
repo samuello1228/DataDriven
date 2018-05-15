@@ -18,18 +18,23 @@
 ### Complie and create some symbol links
 
 + rc compile
-+ cd ChargeFlip/run
-+ ln -s ../../RootCoreBin/bin/x86_64-slc6-gcc49-opt/charge_flip charge_flip
-+ ln -s ../../RootCoreBin/bin/x86_64-slc6-gcc49-opt/re_weight re_weight
++ cd $ROOTCOREBIN/../ChargeFlip/run
++ ln -s $ROOTCOREBIN/bin/x86_64-slc6-gcc49-opt/charge_flip charge_flip
++ ln -s $ROOTCOREBIN/bin/x86_64-slc6-gcc49-opt/re_weight re_weight
 
 ### Run util/charge_flip.cxx
 
++ cd $ROOTCOREBIN/../ChargeFlip/run
 + ./run_data.sh (for data)
 + ./run_mc.sh   (for MC)
 
 ### Run util/re_weight.cxx
 
++ cd $ROOTCOREBIN/../ChargeFlip/run
 + ./re_weight_data.sh (for data)
 + ./re_weight_mc.sh   (for MC)
 
 ### Perform fit
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/Fit
++ root fit.c
