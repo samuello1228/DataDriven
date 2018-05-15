@@ -1,8 +1,14 @@
-## Usage
+# Usage
 
 + ### Check out from GitLab
 
-+ git ssh ssh://git@gitlab.cern.ch:7999/hku/DataDriven.git
++ By ssh 
+
++ git clone ssh://git@gitlab.cern.ch:7999/hku/DataDriven.git
+
++ Or by https
+
++ git clone https://gitlab.cern.ch/hku/DataDriven.git
 
 + ### Create ROOT-based environment
 
@@ -16,7 +22,7 @@
 
 + rc clean
 
-# Complie and make some symbol links
++ ### Complie and create some symbol links
 
 + rc compile
 
