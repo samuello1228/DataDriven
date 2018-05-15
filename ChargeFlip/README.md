@@ -53,3 +53,9 @@
 
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/ReweightPlots
 + root draw.c
+
+### Encapsulate the fitted results into ROOT files
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/GenNTuples
++ root gen_signal.c
++ root gen_baseline.c
