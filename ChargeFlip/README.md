@@ -38,3 +38,18 @@
 
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/Fit
 + root fit.c
+
+### Extract MC Truth
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/FitPlots
++ root get_truth.cxx
+
+### Draw fitting results 
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/FitPlots
++ root draw.c
+
+### Draw plots of re-weighted control samples for validation
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/ReweightPlots
++ root draw.c
