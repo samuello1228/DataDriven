@@ -28,16 +28,16 @@
 + ./run_data.sh (for data)
 + ./run_mc.sh   (for MC)
 
+### Perform fit
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/Fit
++ root fit.c
+
 ### Run util/re_weight.cxx
 
 + cd $ROOTCOREBIN/../ChargeFlip/run
 + ./re_weight_data.sh (for data)
 + ./re_weight_mc.sh   (for MC)
-
-### Perform fit
-
-+ cd $ROOTCOREBIN/../ChargeFlip/scripts/Fit
-+ root fit.c
 
 ### Extract MC Truth
 
