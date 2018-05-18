@@ -280,6 +280,7 @@ void processEvents(string outFile,
 
 	for (long long i = 0; i < nEntries; i++)
 	{
+		if(i%100000==0) cout<<"number of event: " <<i<<endl;
 		mEvts->GetEntry(i);
 		double weight = 1.0; 
 		double mll = getMll(mEvts);
