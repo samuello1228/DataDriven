@@ -318,7 +318,7 @@ void processEvents(string outFile,
 		/*
 		//check the value of mll	
 		double mll_old = getMll(mEvts);
-		double mll_error = (mll - mll_old)/mll_old;
+		double mll_error = fabs(mll - mll_old)/mll_old;
 		if(mll_error > mll_error_max)
 		{
 			cout<<"mll_old: "<<mll_old<<", mll: "<<mll<<", mll_error: "<<mll_error<<endl;
