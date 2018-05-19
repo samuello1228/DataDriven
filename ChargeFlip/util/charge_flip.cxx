@@ -273,22 +273,28 @@ void processEvents(string outFile,
 
 #define CUTFLOW(i)                                                                          \
 	hCutflow->Fill(i);                                                                      \
-	hEta[i]->Fill(mEvts->leps[0].eta, weight); hEta[i]->Fill(mEvts->leps[1].eta, weight);   \
-	hPt[i]->Fill(mEvts->leps[0].pt, weight); hPt[i]->Fill(mEvts->leps[1].pt, weight);       \
+	hEta[i]->Fill(e1_eta_signed, weight); hEta[i]->Fill(e2_eta_signed, weight);   \
+	hPt[i]->Fill(e1_pt, weight); hPt[i]->Fill(e2_pt, weight);       \
 	hMass[i]->Fill(mll, weight);                                                            \
 	num[i]++;
+
+	//double mll_error_max = 0;
 
 	for (long long i = 0; i < nEntries; i++)
 	{
 		if(i%100000==0) cout<<"number of event: " <<i<<endl;
 		mEvts->GetEntry(i);
+
 		double weight = 1.0; 
-		double mll = getMll(mEvts);
-		double e1_eta = fabs(mEvts->leps[0].eta);
+		double mll = mEvts->l12.m;
+
+		double e1_eta_signed = mEvts->leps[0].eta;
+		double e1_eta = fabs(e1_eta_signed);
 		double e1_pt  = mEvts->leps[0].pt;
-		double e2_eta = fabs(mEvts->leps[1].eta);
+
+		double e2_eta_signed = mEvts->leps[1].eta;
+		double e2_eta = fabs(e2_eta_signed);
 		double e2_pt  = mEvts->leps[1].pt;
-		int bid1, bid2;
 
 		CUTFLOW(0); //total
 
@@ -309,6 +315,17 @@ void processEvents(string outFile,
 		if (is_out_eta_pt(e1_eta, e1_pt, e2_eta, e2_pt, MINETA, MAXETA, MINPT, MAXPT)) continue;
 		CUTFLOW(4); //eta, pt requirement
 
+		/*
+		//check the value of mll	
+		double mll_old = getMll(mEvts);
+		double mll_error = (mll - mll_old)/mll_old;
+		if(mll_error > mll_error_max)
+		{
+			cout<<"mll_old: "<<mll_old<<", mll: "<<mll<<", mll_error: "<<mll_error<<endl;
+			mll_error_max = mll_error;
+		}
+		*/
+
 		if (is_out_zmass(mll, lZcand_M, rZcand_M, bl, br)) continue;
 		CUTFLOW(5); //Zmass+SB
 
@@ -325,8 +342,8 @@ void processEvents(string outFile,
 			CUTFLOW(8);
 		}
 
-		bid1 = bin_id(eta_bin(e1_eta), pt_bin(e1_pt), NPT);
-		bid2 = bin_id(eta_bin(e2_eta), pt_bin(e2_pt), NPT);
+		int bid1 = bin_id(eta_bin(e1_eta), pt_bin(e1_pt), NPT);
+		int bid2 = bin_id(eta_bin(e2_eta), pt_bin(e2_pt), NPT);
 
 		bin_zmass(mll, bid1, bid2, lZcand_M, rZcand_M, nC, nL, nR);
 
