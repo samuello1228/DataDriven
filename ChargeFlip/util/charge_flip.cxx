@@ -666,7 +666,6 @@ int get_charge(susyEvts *mEvts, int i)
 	else 
 	{
 		int mother = mEvts->truths[tp].motherI;
-		int m_id   = mEvts->truths[mother].pdgId;
 		bool f_z     = false;
 		bool f_gamma = false;
 		int index_gamma;
@@ -674,6 +673,7 @@ int get_charge(susyEvts *mEvts, int i)
 		{
 			return 77;
 		}
+		int m_id   = mEvts->truths[mother].pdgId;
 		while (mother != -1)
 		{
 			if (m_id == 23) //tag z
