@@ -172,9 +172,9 @@ int main()
 
 	vector<TString> files;
 	files.clear();
-	files.push_back("../share/new_data.txt");
-	//files.push_back("../share/data.txt");
-	files.push_back("../share/inFileList-data.txt");
+	//files.push_back("../share/new_data.txt");
+	files.push_back("../share/data.txt");
+	//files.push_back("../share/inFileList-data.txt");
 	//files.push_back("../share/test-data.txt");
 
 
