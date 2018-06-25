@@ -107,7 +107,8 @@ stringstream monitor;
 TChain* loadData(TString fileList, TString prePath = "./");
 bool ptEtaRequirement(double pt, double eta, int ID);
 bool passRatesCR(susyEvts* tree, int& index);
-bool sigRate(susyEvts* tree);
+void fillHist(susyEvts* tree, int index);
+void sigRate(susyEvts* tree);
 void initialize();
 void finalize();
 void calDivideErr(const double a, const double da, const double b, const double db, double &s, double &ds);
@@ -237,7 +238,7 @@ TChain* loadData(TString fileList, TString prePath)
 	return tc;
 }
 
-bool sigRate(susyEvts* tree)
+void sigRate(susyEvts* tree)
 {
 	unsigned int nEntries = tree->tree1->GetEntries();
 	if (gDEBUG) cout << "Begin calculating signal rates" << endl;
@@ -249,30 +250,9 @@ bool sigRate(susyEvts* tree)
 		int index;
 		if (passRatesCR(tree, index))
 		{ 
-			int id     = int(tree->leps[index].ID) / 1000;
-			double pt  = tree->leps[index].pt;
-			double eta = fabs(tree->leps[index].eta);
-			bool isTight = tree->leps[index].lFlag & IS_SIGNAL;
-			if (id == 11) //mu 
-			{
-				real_el->hLoose->Fill(pt, eta);
-				if (isTight)
-				{
-					real_el->hTight->Fill(pt, eta);
-				}
-			}
-			else if (id == 13)
-			{
-				real_mu->hLoose->Fill(pt, eta);
-				if (isTight)
-				{
-					real_mu->hTight->Fill(pt, eta);
-				}
-			}
+			fillHist(tree, index);
 		}
 	}
-
-	return true;
 }
 
 bool passRatesCR(susyEvts* tree, int &index)
@@ -308,6 +288,32 @@ bool passRatesCR(susyEvts* tree, int &index)
 	}
 
 	return pass;
+}
+
+void fillHist(susyEvts* tree, int index)
+{
+	//For probe lepton
+	int id     = int(tree->leps[index].ID) / 1000;
+	double pt  = tree->leps[index].pt;
+	double eta = fabs(tree->leps[index].eta);
+	bool isTight = tree->leps[index].lFlag & IS_SIGNAL;
+
+	if (id == 11) //electron 
+	{
+		real_el->hLoose->Fill(pt, eta);
+		if (isTight)
+		{
+			real_el->hTight->Fill(pt, eta);
+		}
+	}
+	else if (id == 13) //muon
+	{
+		real_mu->hLoose->Fill(pt, eta);
+		if (isTight)
+		{
+			real_mu->hTight->Fill(pt, eta);
+		}
+	}
 }
 
 void calDivideErr(const double a, const double da, const double b, const double db, double &s, double &ds)
