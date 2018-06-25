@@ -293,7 +293,7 @@ bool passRatesCR(susyEvts* tree, int &index)
 void fillHist(susyEvts* tree, int index)
 {
 	//For probe lepton
-	int id     = int(abs(tree->leps[index].ID)) / 1000;
+	int id     = int(abs(tree->leps[index].ID) / 1000);
 	double pt  = tree->leps[index].pt;
 	double eta = fabs(tree->leps[index].eta);
 	bool isTight = tree->leps[index].lFlag & IS_SIGNAL;
