@@ -106,7 +106,7 @@ stringstream monitor;
 ///////// methods ///////////
 TChain* loadData(TString fileList, TString prePath = "./");
 bool ptEtaRequirement(double pt, double eta, int ID);
-bool passRatesCR(susyEvts* tree, int& index);
+bool passRatesCR(susyEvts* tree, int& flag);
 void fillHist(susyEvts* tree, int index);
 void sigRate(susyEvts* tree);
 void initialize();
@@ -247,47 +247,52 @@ void sigRate(susyEvts* tree)
 	{
 		tree->GetEntry(i); 
 		
-		int index;
-		if (passRatesCR(tree, index))
-		{ 
-			fillHist(tree, index);
+		int flag = 0;
+		if (passRatesCR(tree, flag))
+		{
+			if(flag & 1) fillHist(tree,1);
+			if(flag & 2) fillHist(tree,0);
 		}
 	}
 }
 
-bool passRatesCR(susyEvts* tree, int &index)
+bool passRatesCR(susyEvts* tree, int &flag)
 {
-	bool pass = true;
-	
 	// two leptons
-	pass *= tree->leps.size() == 2;
+	if(tree->leps.size() != 2) return false;
+	
 	// SFOS
-	pass *= int(tree->leps[0].ID) + int(tree->leps[1].ID) == 0;
+	if(int(tree->leps[0].ID /1000) + int(tree->leps[1].ID /1000) != 0) return false;
+	
 	// pt and eta requirement 
-	pass *= ptEtaRequirement(tree->leps[0].pt, tree->leps[0].eta, tree->leps[0].ID);
-	pass *= ptEtaRequirement(tree->leps[1].pt, tree->leps[1].eta, tree->leps[1].ID);
+	if(!ptEtaRequirement(tree->leps[0].pt, tree->leps[0].eta, tree->leps[0].ID)) return false;
+	if(!ptEtaRequirement(tree->leps[1].pt, tree->leps[1].eta, tree->leps[1].ID)) return false;
+	
 	// in Z-mass window
-	pass *= fabs(tree->l12.m - M_Z) < M_Z_WIDTH;
+	if(fabs(tree->l12.m - M_Z) > M_Z_WIDTH) return false;
+	
 	// no more than three jets
-	pass *= tree->jets.size() <= 3;
+	if(tree->jets.size() > 3) return false;
+	
 	// no b-jets
 	for (unsigned int i = 0; i < tree->jets.size(); i++) 
 	{
-		pass *= !(tree->jets[i].jFlag & JT_BJET);
+		if(tree->jets[i].jFlag & JT_BJET) return false;
 	}
+	
 	// tag with signal requirement
-	if (tree->leps[0].pt > tree->leps[1].pt)
+	if(tree->leps[0].pt > 25 && (tree->leps[0].lFlag & IS_SIGNAL))
 	{
-		pass *= tree->leps[0].lFlag & IS_SIGNAL;
-		index = 1;
+		flag |= 1;
 	}
-	else 
+	
+	if(tree->leps[1].pt > 25 && (tree->leps[1].lFlag & IS_SIGNAL))
 	{
-		pass *= tree->leps[1].lFlag & IS_SIGNAL;
-		index = 0;
+		flag |= 2;
 	}
-
-	return pass;
+	
+	if(flag == 0) return false;
+	else return true;
 }
 
 void fillHist(susyEvts* tree, int index)
