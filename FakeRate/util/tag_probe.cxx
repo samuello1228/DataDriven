@@ -271,6 +271,7 @@ bool passRatesCR(susyEvts* tree, int &flag)
 	// in Z-mass window
 	if(fabs(tree->l12.m - M_Z) > M_Z_WIDTH) return false;
 	
+	/*
 	// no more than three jets
 	if(tree->jets.size() > 3) return false;
 	
@@ -279,6 +280,7 @@ bool passRatesCR(susyEvts* tree, int &flag)
 	{
 		if(tree->jets[i].jFlag & JT_BJET) return false;
 	}
+	*/
 	
 	// tag with signal requirement
 	if(tree->leps[0].pt > 25 && (tree->leps[0].lFlag & IS_SIGNAL))
