@@ -105,7 +105,7 @@ stringstream monitor;
 
 ///////// methods ///////////
 TChain* loadData(TString fileList, TString prePath = "./");
-bool ptEtaRequirement(double pt, double eta, LEP_TYPE e);
+bool ptEtaRequirement(double pt, double eta, int ID);
 bool passRatesCR(susyEvts* tree, int& index);
 bool sigRate(susyEvts* tree);
 void initialize();
@@ -284,8 +284,8 @@ bool passRatesCR(susyEvts* tree, int &index)
 	// SFOS
 	pass *= int(tree->leps[0].ID) + int(tree->leps[1].ID) == 0;
 	// pt and eta requirement 
-	//pass *= ptEtaRequirement(tree->leps[0].pt, tree->leps[0].eta);
-	//pass *= ptEtaRequirement(tree->leps[1].pt, tree->leps[1].eta);
+	pass *= ptEtaRequirement(tree->leps[0].pt, tree->leps[0].eta, tree->leps[0].ID);
+	pass *= ptEtaRequirement(tree->leps[1].pt, tree->leps[1].eta, tree->leps[1].ID);
 	// in Z-mass window
 	pass *= fabs(tree->l12.m - M_Z) < M_Z_WIDTH;
 	// no more than three jets
@@ -364,13 +364,14 @@ char* itoa(int num, char* str,int radix)
 	return str;
 }
 
-bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
+bool ptEtaRequirement(double pt, double eta, int ID)
 {
-	if (pt < PT[0] || pt > PT[NPT])
+	//if (pt < PT[0] || pt > PT[NPT])
+	if (pt < PT[0])
 	{
 		return false;
 	}
-	if (e == LEP_TYPE::ELEC)
+	if (int(abs(ID)/1000) == 11)
 	{
 		if (fabs(eta) < ETA_EL[0] || fabs(eta) > ETA_EL[NETA_EL])
 		{
@@ -381,7 +382,7 @@ bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
 			return true;
 		}
 	}
-	else 
+	else if (int(abs(ID)/1000) == 13)
 	{
 		if (fabs(eta) < ETA_MU[0] || fabs(eta) > ETA_MU[NETA_MU])
 		{
@@ -391,5 +392,9 @@ bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
 		{
 			return true;
 		}
+	}
+	else
+	{
+		return false;
 	}
 }
