@@ -171,8 +171,8 @@ int main(int argc, char* argv[])
 	files.clear();
 	if (data_type == "data")
 	{
-		files.push_back("../share/inFileList-data.txt");
-		//files.push_back("../share/data.txt");
+		//files.push_back("../share/inFileList-data.txt");
+		files.push_back("../share/data.txt");
 		//files.push_back("../share/new_data.txt");
 		isMC = false;
 	}
