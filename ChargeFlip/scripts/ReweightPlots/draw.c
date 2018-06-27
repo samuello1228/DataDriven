@@ -14,6 +14,8 @@
 #include "TH1D.h"
 #include "TLegend.h"
 #include "TMultiGraph.h"
+#include "TStyle.h"
+#include "TROOT.h"
 
 using namespace std;
 #define GetHist(x) {x = (TH1D*)f->Get(#x);}
@@ -135,12 +137,6 @@ int drawPlots(bool isData)
 	hist.push_back( data(h_eta_2_ss, h_eta_2, "subleading #eta",                   "eta_2", false));
 	hist.push_back( data(h_phi_1_ss, h_phi_1, "leading #phi",                      "phi_1", false));
 	hist.push_back( data(h_phi_2_ss, h_phi_2, "subleading #phi",                   "phi_2", false));
-	int n_rebin = 5;
-	hist[5].h_data->Rebin(n_rebin);
-	hist[5].h_mc->Rebin(n_rebin);
-	hist[6].h_data->Rebin(n_rebin);
-	hist[6].h_mc->Rebin(n_rebin);
-
 
 	cout << hist.size() << endl;
 
