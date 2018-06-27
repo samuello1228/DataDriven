@@ -19,6 +19,7 @@
 #include "TStyle.h"
 #include "TH2D.h"
 #include "TFile.h"
+#include "TROOT.h"
 
 using namespace std;
 
@@ -447,7 +448,7 @@ double getMax(TGraphErrors *gr)
 {
 	int np = gr->GetN();
 	double max = -999999;
-	for (unsigned int i = 0; i < np; i++)
+	for (int i = 0; i < np; i++)
 	{
 		double x, y;
 		gr->GetPoint(i, x, y);
@@ -463,7 +464,7 @@ double getMin(TGraphErrors *gr)
 {
 	int np = gr->GetN();
 	double min = 999999;
-	for (unsigned int i = 0; i < np; i++)
+	for (int i = 0; i < np; i++)
 	{
 		double x, y;
 		gr->GetPoint(i, x, y);
