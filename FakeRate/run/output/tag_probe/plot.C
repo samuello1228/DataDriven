@@ -15,6 +15,8 @@
 #include <TLine.h>
 #include <TStyle.h>
 #include <TString.h>
+#include "AtlasLabels.C"
+#include "AtlasStyle.C"
 
 const double ETA_EL[] = {0, 0.8, 1.37, 1.52, 2.00, 2.47};
 const double ETA_MU[] = {0, 0.6, 1.2, 1.8, 2.5};
@@ -47,12 +49,29 @@ void Draw(TString treeName,unsigned int NETA)
     }
     delete file;
     
+    SetAtlasStyle();
+    
     h2[1]->SetLineColor(kBlack);
     h2[2]->SetLineColor(kRed);
     h2[3]->SetLineColor(kGreen);
     h2[4]->SetLineColor(kBlue);
     
-    h2[1]->GetYaxis()->SetRangeUser(0.6,1.2);
+    h2[1]->SetMarkerStyle(20);
+    h2[2]->SetMarkerStyle(21);
+    h2[3]->SetMarkerStyle(22);
+    h2[4]->SetMarkerStyle(23);
+    
+    h2[1]->SetMarkerColor(kBlack);
+    h2[2]->SetMarkerColor(kRed);
+    h2[3]->SetMarkerColor(kGreen);
+    h2[4]->SetMarkerColor(kBlue);
+    
+    
+    h2[1]->GetXaxis()->SetTitle("p_{T} [GeV]");
+    h2[1]->GetYaxis()->SetRangeUser(0.6,1.1);
+    
+    if(treeName=="El_hEff") h2[1]->GetYaxis()->SetTitle("Electron Real Efficiency");
+    else if(treeName=="Mu_hEff") h2[1]->GetYaxis()->SetTitle("Muon Real Efficiency");
     
     TCanvas* c2 = new TCanvas();
     c2->cd();
@@ -62,6 +81,41 @@ void Draw(TString treeName,unsigned int NETA)
     h2[2]->Draw("same");
     h2[3]->Draw("same");
     h2[4]->Draw("same");
+    
+    ATLASLabel(0.2,0.88,"Internal");
+    
+    Double_t xl1, yl1, xl2, yl2;
+    xl2=0.85;
+    yl2=0.4;
+    xl1=xl2-0.2;
+    yl1=yl2-0.2;
+    
+    TLegend* leg = new TLegend(xl1,yl1,xl2,yl2);
+    leg->SetFillStyle(0);
+    leg->SetTextFont(42);
+    leg->SetBorderSize(0);
+    
+    for(unsigned int j=1;j<=4;j++)
+    {
+        TString Name;
+        if(treeName=="El_hEff")
+        {
+            Name = TString::Format("%.2f",ETA_EL[j-1]);
+            Name += "<|#eta|<";
+            Name += TString::Format("%.2f",ETA_EL[j]);
+        }
+        else if(treeName=="Mu_hEff")
+        {
+            Name = TString::Format("%.2f",ETA_MU[j-1]);
+            Name += "<|#eta|<";
+            Name += TString::Format("%.2f",ETA_MU[j]);
+        }
+        
+        leg->AddEntry(h2[j],Name.Data(),"pl");
+    }
+    
+    leg->Draw();
+    
     
     TString NameTemp = treeName;
     NameTemp += ".eps";
