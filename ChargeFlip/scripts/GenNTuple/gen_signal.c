@@ -19,6 +19,7 @@
 #include "TStyle.h"
 #include "TH2D.h"
 #include "TFile.h"
+#include "TROOT.h"
 
 using namespace std;
 
@@ -123,11 +124,12 @@ int gen_signal()
 		{
 			// only sys.
 			data[NUM_DATA-2][i][j] = data[0][i][j];
-			data_err[NUM_DATA-2][i][j] = diff[i][j]*diff[i][j] + (mc[0][i][j] - mc[1][i][j])*(mc[0][i][j] - mc[1][i][j]);
+			double MCTruthError = (mc[0][i][j] - mc[1][i][j]) /mc[0][i][j] *data[0][i][j];
+			data_err[NUM_DATA-2][i][j] = diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-2][i][j] = std::sqrt( data_err[NUM_DATA-2][i][j] );
 			// sys. + stat.
 			data[NUM_DATA-1][i][j] = data[0][i][j];
-			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + (mc[0][i][j] - mc[1][i][j])*(mc[0][i][j] - mc[1][i][j]);
+			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-1][i][j] = std::sqrt( data_err[NUM_DATA-1][i][j] );
 		}
 	}

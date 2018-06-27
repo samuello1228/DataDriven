@@ -188,8 +188,9 @@ int draw()
 		{
 			data[NUM_DATA-1][i][j] = data[0][i][j];
 			// only sys.
-			data_err[NUM_DATA-1][i][j] = diff[i][j]*diff[i][j] + (mc[0][i][j] - mc[1][i][j])*(mc[0][i][j] - mc[1][i][j]);
-			//data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + (mc[0][i][j] - mc[1][i][j])*(mc[0][i][j] - mc[1][i][j]);
+			double MCTruthError = (mc[0][i][j] - mc[1][i][j]) /mc[0][i][j] *data[0][i][j];
+			//data_err[NUM_DATA-1][i][j] = diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
+			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-1][i][j] = std::sqrt( data_err[NUM_DATA-1][i][j] );
 			gd_data[NUM_DATA - 1][i]->SetPoint(j, x[j], data[NUM_DATA-1][i][j]);
 			gd_data[NUM_DATA - 1][i]->SetPointError(j, x_err[j], data_err[NUM_DATA-1][i][j]);
