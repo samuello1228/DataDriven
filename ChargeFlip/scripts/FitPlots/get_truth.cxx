@@ -34,7 +34,7 @@ int get_truth()
 	elec_type.push_back( "baseline" );
 	for (unsigned int j = 0; j < elec_type.size(); j++)
 	{
-		string file   = string("../../run/checks/mc_") + elec_type[j] + string("_80_100_0_0.root");
+		string file   = string("../../run/checks/mc_") + elec_type[j] + string("_80_100_20_20.root");
 		string output = string("./mc_") + elec_type[j] + string("_truth.txt");
 
 		TFile *f = new TFile(file.c_str(), "OPEN");

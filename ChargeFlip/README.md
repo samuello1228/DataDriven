@@ -33,12 +33,6 @@
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/Fit
 + root fit.c
 
-### Run util/re_weight.cxx
-
-+ cd $ROOTCOREBIN/../ChargeFlip/run
-+ ./re_weight_data.sh (for data)
-+ ./re_weight_mc.sh   (for MC)
-
 ### Extract MC Truth
 
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/FitPlots
@@ -49,13 +43,20 @@
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/FitPlots
 + root draw.c
 
-### Draw plots of re-weighted control samples for validation
-
-+ cd $ROOTCOREBIN/../ChargeFlip/scripts/ReweightPlots
-+ root draw.c
-
 ### Encapsulate the fitted results into ROOT files
 
 + cd $ROOTCOREBIN/../ChargeFlip/scripts/GenNTuples
 + root gen_signal.c
 + root gen_baseline.c
+
+### Run util/re_weight.cxx
+
++ cd $ROOTCOREBIN/../ChargeFlip/run
++ ./re_weight_data.sh (for data)
++ ./re_weight_mc.sh   (for MC)
+
+### Draw plots of re-weighted control samples for validation
+
++ cd $ROOTCOREBIN/../ChargeFlip/scripts/ReweightPlots
++ root draw.c
+

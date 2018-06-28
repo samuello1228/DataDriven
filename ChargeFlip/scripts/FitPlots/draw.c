@@ -29,7 +29,7 @@ const int NETA  = sizeof(VETAS)/sizeof(VETAS[0]) - 1;
 const int NPT   = sizeof(VPTS)/sizeof(VPTS[0]) - 1;
 const int SIZE  = NETA*NPT;
 
-const int NUM_MC   = 3;  //0:mc fit; 1:mc truth; 2:diff
+const int NUM_MC   = 3;  //0:mc fit; 1:mc truth; 2:ratio of fit and truth
 const int NUM_DATA = 6;  //0-4 for comparsion, 5 for final contribution
 
 double y[SIZE], y_err[SIZE];
@@ -83,7 +83,7 @@ int draw()
 
 	vector<string> path_mc;
 	path_mc.clear();
-	path_mc.push_back( "../Fit/fit_mc_signal_80_100_0_0.txt" );
+	path_mc.push_back( "../Fit/fit_mc_signal_80_100_20_20.txt" );
 	path_mc.push_back( "./mc_signal_truth.txt" );
 
 	vector<EColor> color_mc;
