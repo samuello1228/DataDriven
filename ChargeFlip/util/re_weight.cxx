@@ -181,6 +181,7 @@ void processEvents(
 		int nbin;
 		int xlow;
 		int xup;
+		double var;
 	};
 
 	vector<Variable> hist;
@@ -255,9 +256,16 @@ void processEvents(
 		bid1 = bin_id(eta_bin(fabs(e1_eta)), pt_bin(e1_pt), NPT);
 		bid2 = bin_id(eta_bin(fabs(e2_eta)), pt_bin(e2_pt), NPT);
 
+		hist[0].var = mll;
+		hist[1].var = e1_eta;
+		hist[2].var = e2_eta;
+		hist[3].var = e1_pt;
+		hist[4].var = e2_pt;
+		hist[5].var = e1_phi;
+		hist[6].var = e2_phi;
+
 		if (e1_charge == e2_charge) //ss event
 		{
-			hist[0].h_nom_ss->Fill(mll);
 			if (mll > 70 && mll < 80)
 			{
 				n_ss[0]++;
@@ -271,12 +279,11 @@ void processEvents(
 				n_ss[2]++;
 			}
 
-			hist[1].h_nom_ss->Fill(e1_eta);
-			hist[2].h_nom_ss->Fill(e2_eta);
-			hist[3].h_nom_ss->Fill(e1_pt);
-			hist[4].h_nom_ss->Fill(e2_pt);
-			hist[5].h_nom_ss->Fill(e1_phi);
-			hist[6].h_nom_ss->Fill(e2_phi);
+			for (unsigned int i = 0; i < hist.size(); i++)
+			{
+				hist[i].h_nom_ss->Fill(hist[i].var);
+			}
+
 			h_m_pt_1_ss->Fill(mll, e1_pt);
 			h_m_pt_2_ss->Fill(mll, e2_pt);
 			h_m_eta_1_ss->Fill(mll, e1_eta);
@@ -288,7 +295,7 @@ void processEvents(
 			w_2  = corr[bid2];
 			weight = w_1 * (1-w_2) + w_2 * (1-w_1);
 			weight = weight / (1-weight);
-			hist[0].h_nom->Fill(mll, weight);
+
 			if (mll > 70 && mll < 80)
 			{
 				n_os[0]+= weight;
@@ -302,12 +309,11 @@ void processEvents(
 				n_os[2]+= weight;
 			}
 
-			hist[1].h_nom->Fill(e1_eta, weight);
-			hist[2].h_nom->Fill(e2_eta, weight);
-			hist[3].h_nom->Fill(e1_pt, weight);
-			hist[4].h_nom->Fill(e2_pt, weight);
-			hist[5].h_nom->Fill(e1_phi, weight);
-			hist[6].h_nom->Fill(e2_phi, weight);
+			for (unsigned int i = 0; i < hist.size(); i++)
+			{
+				hist[i].h_nom->Fill(hist[i].var, weight);
+			}
+
 			h_m_pt_1->Fill(mll, e1_pt, weight);
 			h_m_pt_2->Fill(mll, e2_pt, weight);
 			h_m_eta_1->Fill(mll, e1_eta, weight);
@@ -429,5 +435,6 @@ void LoadCorr(string file)
 			cout<<corr_down[bid]<<", "<<corr[bid]<<", "<<corr_up[bid]<<endl;
 		}
 	}
+	delete f;
 }
 
