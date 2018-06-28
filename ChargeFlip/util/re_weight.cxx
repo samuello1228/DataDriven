@@ -40,6 +40,8 @@ const double M_Z       = 91.1876;
 const double M_Z_WIDTH = 10;
 
 double *corr = new double[SIZE];
+double *corr_down = new double[SIZE];
+double *corr_up = new double[SIZE];
 
 //------ methods for simplicity -----
 bool   is_out_zmass(double mll, double lZcand_M, double rZcand_M, double bl, double br);
@@ -391,6 +393,7 @@ int bin_id(int etaB, int ptB, int npt)
 
 void LoadCorr(string file)
 {
+	/*
 	ifstream in(file.c_str());
 	if (in.is_open())
 	{
@@ -409,5 +412,22 @@ void LoadCorr(string file)
 		exit(1);
 	}
 	in.close();
+	*/
+
+	TFile *f = new TFile("../scripts/GenNTuple/cfRatesSignal.root");
+	TH2D *h = (TH2D*) f->Get("hFlipProb_SysAndStat");
+
+	for (int i = 1; i < NETA; i++)
+	{
+		for (int j = 1; j < NPT; j++)
+		{
+			//cout<<h->GetBinContent(j,i)<<", "<<h->GetBinError(j,i)<<endl;
+			int bid = (i-1)*(NPT-1) + j-1;
+			corr[bid] = h->GetBinContent(j,i);
+			corr_down[bid] = h->GetBinContent(j,i) - h->GetBinError(j,i);
+			corr_up[bid]   = h->GetBinContent(j,i) + h->GetBinError(j,i);
+			cout<<corr_down[bid]<<", "<<corr[bid]<<", "<<corr_up[bid]<<endl;
+		}
+	}
 }
 
