@@ -78,23 +78,22 @@ int main(int argc, char* argv[])
 	string data_type = string(argv[1]);
 	string file      = string(argv[2]);
 
-	string fit_data = "../scripts/Fit/fit_data_signal_80_100_20_20.txt";
-	string fit_mc   = "../scripts/Fit/fit_mc_signal_80_100_0_0.txt";
+	//string fit_data = "../scripts/Fit/fit_data_signal_80_100_20_20.txt";
+	//string fit_mc   = "../scripts/Fit/fit_mc_signal_80_100_20_20.txt";
+	string fit_data = "hFlipProb_data_SysAndStat";
+	string fit_mc   = "hFlipProb_MC_SysAndStat";
 	string input_corr;
 
-	pair<double, double> sideband;
-	bool isBkgSub;
+	bool isBkgSub = true;
+	pair<double, double> sideband = {20, 20};
+
 	if (data_type == "data")
 	{
-		isBkgSub   = true;
 		input_corr = fit_data;
-		sideband   = {20, 20};
 	}
 	else
 	{
-		isBkgSub   = false;
 		input_corr = fit_mc;
-		sideband   = {0, 0};
 	}
 
 	LoadCorr(input_corr);
@@ -421,7 +420,7 @@ void LoadCorr(string file)
 	*/
 
 	TFile *f = new TFile("../scripts/GenNTuple/cfRatesSignal.root");
-	TH2D *h = (TH2D*) f->Get("hFlipProb_SysAndStat");
+	TH2D *h = (TH2D*) f->Get(file.c_str());
 
 	for (int i = 1; i < NETA; i++)
 	{
