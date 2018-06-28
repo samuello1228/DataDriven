@@ -18,6 +18,8 @@
 #include "TSystem.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TString.h"
+#include "TMath.h"
 #include "ChargeFlip/susyEvts.h"
 
 #define PRINT(x) {std::cout << #x << " = " << x << std::endl;}
@@ -156,40 +158,53 @@ void processEvents(
 	bool     isBkgSub)
 {
 	char checkName[200];
-	bool isData;
-	if (data_type == "data")
-	{
-		isData = true;
-	}
-	else
-	{
-		isData = false;
-	}
 	sprintf(checkName, "../run/checks_weight/%s_%d_%d_%d_%d.root", data_type.c_str(), (int)lZcand_M, (int)rZcand_M, (int)bl, (int)br);
 	TFile *f = new TFile(checkName, "RECREATE");
-	TH1D *h_mll, *h_mll_ss;
-	if (isData)
+
+	struct Variable 
 	{
-		h_mll        = new TH1D("h_mll",       "h_mll",   50, 20, 200);
-		h_mll_ss     = new TH1D("h_mll_ss",    "h_mll",   50, 20, 200);
-	}
-	else 
+		Variable(TString name_new, int nbin_new, int xlow_new, int xup_new)
+		{
+			name = name_new;
+			nbin = nbin_new;
+			xlow = xlow_new;
+			xup  = xup_new;
+		}
+		
+		TH1D *h_nom;
+		TH1D *h_down;
+		TH1D *h_up;
+		TH1D *h_nom_ss;
+		TString name;
+		int nbin;
+		int xlow;
+		int xup;
+	};
+
+	vector<Variable> hist;
+	hist.push_back( Variable("mll",50,20,200) );
+	hist.push_back( Variable("eta_1",50,-2.47,2.47) );
+	hist.push_back( Variable("eta_2",50,-2.47,2.47) );
+	hist.push_back( Variable("pt_1",50,0,500) );
+	hist.push_back( Variable("pt_2",50,0,500) );
+	hist.push_back( Variable("phi_1",50,-TMath::Pi(),TMath::Pi()) );
+	hist.push_back( Variable("phi_2",50,-TMath::Pi(),TMath::Pi()) );
+
+	for (unsigned int i = 0; i < hist.size(); i++)
 	{
-		h_mll        = new TH1D("h_mll",       "h_mll",   50, 20, 200);
-		h_mll_ss     = new TH1D("h_mll_ss",    "h_mll",   50, 20, 200);
+		TString hName = "h_" + hist[i].name;
+		hist[i].h_nom = new TH1D(hName.Data(), hName.Data(), hist[i].nbin, hist[i].xlow, hist[i].xup);
+
+		TString hName2 = hName + "_down";
+		hist[i].h_down = new TH1D(hName2.Data(), hName2.Data(), hist[i].nbin, hist[i].xlow, hist[i].xup);
+
+		hName2 = hName + "_up";
+		hist[i].h_up = new TH1D(hName2.Data(), hName2.Data(), hist[i].nbin, hist[i].xlow, hist[i].xup);
+
+		hName2 = hName + "_ss";
+		hist[i].h_nom_ss = new TH1D(hName2.Data(), hName2.Data(), hist[i].nbin, hist[i].xlow, hist[i].xup);
 	}
-	TH1D *h_eta_1      = new TH1D("h_eta_1",     "h_eta",   50, -2.47, 2.47);
-	TH1D *h_eta_1_ss   = new TH1D("h_eta_1_ss",  "h_eta",   50, -2.47, 2.47);
-	TH1D *h_eta_2      = new TH1D("h_eta_2",     "h_eta",   50, -2.47, 2.47);
-	TH1D *h_eta_2_ss   = new TH1D("h_eta_2_ss",  "h_eta",   50, -2.47, 2.47);
-	TH1D *h_pt_1       = new TH1D("h_pt_1",      "h_pt",    50, 0, 500);
-	TH1D *h_pt_1_ss    = new TH1D("h_pt_1_ss",   "h_pt",    50, 0, 500);
-	TH1D *h_pt_2       = new TH1D("h_pt_2",      "h_pt",    50, 0, 500);
-	TH1D *h_pt_2_ss    = new TH1D("h_pt_2_ss",   "h_pt",    50, 0, 500);
-	TH1D *h_phi_1      = new TH1D("h_phi_1",     "h_phi",   50, -3.14, 3.14);
-	TH1D *h_phi_1_ss   = new TH1D("h_phi_1_ss",  "h_phi",   50, -3.14, 3.14);
-	TH1D *h_phi_2      = new TH1D("h_phi_2",     "h_phi",   50, -3.14, 3.14);
-	TH1D *h_phi_2_ss   = new TH1D("h_phi_2_ss",  "h_phi",   50, -3.14, 3.14);
+
 	TH2D *h_m_eta_1    = new TH2D("h_m_eta_1",   "h_m_eta", 50, 20, 200, 50, -2.47, 2.47);
 	TH2D *h_m_eta_1_ss = new TH2D("h_m_eta_1_ss","h_m_eta", 50, 20, 200, 50, -2.47, 2.47);
 	TH2D *h_m_eta_2    = new TH2D("h_m_eta_2",   "h_m_eta", 50, 20, 200, 50, -2.47, 2.47);
@@ -214,7 +229,7 @@ void processEvents(
 	{
 		mEvts->GetEntry(i);
 		double w_1, w_2, weight;
-		double mll = getMll(mEvts);
+		double mll = mEvts->l12.m;
 		double e1_eta = mEvts->leps[0].eta;
 		double e1_pt  = mEvts->leps[0].pt;
 		double e1_phi = mEvts->leps[0].phi;
@@ -240,7 +255,7 @@ void processEvents(
 
 		if (e1_charge == e2_charge) //ss event
 		{
-			h_mll_ss->Fill(mll);
+			hist[0].h_nom_ss->Fill(mll);
 			if (mll > 70 && mll < 80)
 			{
 				n_ss[0]++;
@@ -253,32 +268,17 @@ void processEvents(
 			{
 				n_ss[2]++;
 			}
-			if (e1_pt > e2_pt)
-			{
-				h_pt_1_ss->Fill(e1_pt);
-				h_pt_2_ss->Fill(e2_pt);
-				h_eta_1_ss->Fill(e1_eta);
-				h_eta_2_ss->Fill(e2_eta);
-				h_phi_1_ss->Fill(e1_phi);
-				h_phi_2_ss->Fill(e2_phi);
-				h_m_pt_1_ss->Fill(mll, e1_pt);
-				h_m_pt_2_ss->Fill(mll, e2_pt);
-				h_m_eta_1_ss->Fill(mll, e1_eta);
-				h_m_eta_2_ss->Fill(mll, e2_eta);
-			}
-			else
-			{
-				h_pt_1_ss->Fill(e2_pt);
-				h_pt_2_ss->Fill(e1_pt);
-				h_eta_1_ss->Fill(e2_eta);
-				h_eta_2_ss->Fill(e1_eta);
-				h_phi_1_ss->Fill(e2_phi);
-				h_phi_2_ss->Fill(e1_phi);
-				h_m_pt_1_ss->Fill(mll, e2_pt);
-				h_m_pt_2_ss->Fill(mll, e1_pt);
-				h_m_eta_1_ss->Fill(mll, e2_eta);
-				h_m_eta_2_ss->Fill(mll, e1_eta);
-			}
+
+			hist[1].h_nom_ss->Fill(e1_eta);
+			hist[2].h_nom_ss->Fill(e2_eta);
+			hist[3].h_nom_ss->Fill(e1_pt);
+			hist[4].h_nom_ss->Fill(e2_pt);
+			hist[5].h_nom_ss->Fill(e1_phi);
+			hist[6].h_nom_ss->Fill(e2_phi);
+			h_m_pt_1_ss->Fill(mll, e1_pt);
+			h_m_pt_2_ss->Fill(mll, e2_pt);
+			h_m_eta_1_ss->Fill(mll, e1_eta);
+			h_m_eta_2_ss->Fill(mll, e2_eta);
 		}
 		else
 		{
@@ -286,7 +286,7 @@ void processEvents(
 			w_2  = corr[bid2];
 			weight = w_1 * (1-w_2) + w_2 * (1-w_1);
 			weight = weight / (1-weight);
-			h_mll->Fill(mll, weight);
+			hist[0].h_nom->Fill(mll, weight);
 			if (mll > 70 && mll < 80)
 			{
 				n_os[0]+= weight;
@@ -299,48 +299,26 @@ void processEvents(
 			{
 				n_os[2]+= weight;
 			}
-			if (e1_pt > e2_pt)
-			{
-				h_pt_1->Fill(e1_pt, weight);
-				h_pt_2->Fill(e2_pt, weight);
-				h_eta_1->Fill(e1_eta, weight);
-				h_eta_2->Fill(e2_eta, weight);
-				h_phi_1->Fill(e1_phi, weight);
-				h_phi_2->Fill(e2_phi, weight);
-				h_m_pt_1->Fill(mll, e1_pt, weight);
-				h_m_pt_2->Fill(mll, e2_pt, weight);
-				h_m_eta_1->Fill(mll, e1_eta, weight);
-				h_m_eta_2->Fill(mll, e2_eta, weight);
-			}
-			else
-			{
-				h_pt_2->Fill(e1_pt, weight);
-				h_pt_1->Fill(e2_pt, weight);
-				h_eta_2->Fill(e1_eta, weight);
-				h_eta_1->Fill(e2_eta, weight);
-				h_phi_1->Fill(e2_phi, weight);
-				h_phi_2->Fill(e1_phi, weight);
-				h_m_pt_1->Fill(mll, e2_pt, weight);
-				h_m_pt_2->Fill(mll, e1_pt, weight);
-				h_m_eta_1->Fill(mll, e2_eta, weight);
-				h_m_eta_2->Fill(mll, e1_eta, weight);
-			}
+
+			hist[1].h_nom->Fill(e1_eta, weight);
+			hist[2].h_nom->Fill(e2_eta, weight);
+			hist[3].h_nom->Fill(e1_pt, weight);
+			hist[4].h_nom->Fill(e2_pt, weight);
+			hist[5].h_nom->Fill(e1_phi, weight);
+			hist[6].h_nom->Fill(e2_phi, weight);
+			h_m_pt_1->Fill(mll, e1_pt, weight);
+			h_m_pt_2->Fill(mll, e2_pt, weight);
+			h_m_eta_1->Fill(mll, e1_eta, weight);
+			h_m_eta_2->Fill(mll, e2_eta, weight);
 		}
 	}
-	h_mll->Write();
-	h_mll_ss->Write();
-	h_pt_1->Write();
-	h_pt_1_ss->Write();
-	h_pt_2->Write();
-	h_pt_2_ss->Write();
-	h_eta_1->Write();	
-	h_eta_1_ss->Write();	
-	h_eta_2->Write();	
-	h_eta_2_ss->Write();	
-	h_phi_1->Write();	
-	h_phi_1_ss->Write();	
-	h_phi_2->Write();	
-	h_phi_2_ss->Write();	
+
+	for (unsigned int i = 0; i < hist.size(); i++)
+	{
+		hist[i].h_nom->Write();
+		hist[i].h_nom_ss->Write();
+	}
+
 	h_m_pt_1->Write();
 	h_m_pt_1_ss->Write();
 	h_m_pt_2->Write();
