@@ -29,7 +29,7 @@ const int NETA  = sizeof(VETAS)/sizeof(VETAS[0]) - 1;
 const int NPT   = sizeof(VPTS)/sizeof(VPTS[0]) - 1;
 const int SIZE  = NETA*NPT;
 
-const int NUM_MC   = 2;  //0:mc fit; 1:mc truth; 2:diff
+const int NUM_MC   = 8;  //0-4 for comparsion, 5 for mc truth, 6 for sys, 7 for sys.+stat.
 const int NUM_DATA = 7;  //0-4 for comparsion, 5 for sys, 6 for sys.+stat.
 
 double y[SIZE], y_err[SIZE];
@@ -41,7 +41,8 @@ double data_err[NUM_DATA][NPT][NETA];
 double mc[NUM_MC][NPT][NETA];     
 double mc_err[NUM_MC][NPT][NETA];
 
-double diff[NPT][NETA];      //the max deviations from fitted values
+double diff_data[NPT][NETA];      //the max deviations from fitted values
+double diff_mc[NPT][NETA];      //the max deviations from fitted values
 
 void SetStatus(TH2D *h);
 
@@ -56,23 +57,14 @@ int gen_signal()
 	path_data.push_back( "../Fit/fit_data_signal_75_105_20_20.txt" );
 	path_data.push_back( "../Fit/fit_data_signal_80_100_0_0.txt" );
 
-	vector<EColor> color_data;
-	color_data.clear();
-	color_data.push_back( kBlack );
-	color_data.push_back( kBlue  );
-	color_data.push_back( kRed   );
-	color_data.push_back( kGreen );
-	color_data.push_back( kPink );
-
 	vector<string> path_mc;
 	path_mc.clear();
+	path_mc.push_back( "../Fit/fit_mc_signal_80_100_20_20.txt" );
+	path_mc.push_back( "../Fit/fit_mc_signal_80_100_15_15.txt" );
+	path_mc.push_back( "../Fit/fit_mc_signal_80_100_25_25.txt" );
+	path_mc.push_back( "../Fit/fit_mc_signal_75_105_20_20.txt" );
 	path_mc.push_back( "../Fit/fit_mc_signal_80_100_0_0.txt" );
 	path_mc.push_back( "../FitPlots/mc_signal_truth.txt" );
-
-	vector<EColor> color_mc;
-	color_mc.clear();
-	color_mc.push_back( kBlue );
-	color_mc.push_back( kRed  );
 
 	for (unsigned int i = 0; i < NETA; i++)
 	{
@@ -91,11 +83,20 @@ int gen_signal()
 				int k = j * NPT + i;
 				mc[n][i][j]     = y[k];
 				mc_err[n][i][j] = y_err[k];
+
+				//compare variation for sys error
+				if (n == 0) diff_mc[i][j] = -1;  //initialization
+				if (n == NUM_MC-3) continue; //for MC truth
+				double delta = std::fabs(mc[n][i][j] - mc[0][i][j]);
+				if (delta > diff_mc[i][j])
+				{
+					diff_mc[i][j] = delta;
+				}
 			}
 		}
 	}
 
-	// load data for comparison
+	// load data
 	for (unsigned int n = 0; n < path_data.size(); n++)
 	{
 		loadvalue(path_data[n]);
@@ -103,42 +104,56 @@ int gen_signal()
 		{
 			for (unsigned int j = 0; j < NETA; j++)
 			{
-				if (n == 0)
-				{
-					diff[i][j] = -1;  //initialization
-				}
 				int k = j * NPT + i;
 				data[n][i][j]     = y[k];
 				data_err[n][i][j] = y_err[k];
+
+				//compare variation for sys error
+				if (n == 0) diff_data[i][j] = -1;  //initialization
 				double delta = std::fabs(data[n][i][j] - data[0][i][j]);
-				if (delta > diff[i][j])
+				if (delta > diff_data[i][j])
 				{
-					diff[i][j] = delta;
+					diff_data[i][j] = delta;
 				}
 			}
 		}
 	}
+
 	for (unsigned int i = 0; i < NPT; i++)
 	{
 		for (unsigned int j = 0; j < NETA; j++)
 		{
+			//For MC
+			// only sys.
+			mc[NUM_MC-2][i][j] = mc[0][i][j];
+			double MCTruthError = mc[0][i][j] - mc[NUM_MC-3][i][j];
+			mc_err[NUM_MC-2][i][j] = diff_mc[i][j]*diff_mc[i][j] + MCTruthError*MCTruthError;
+			mc_err[NUM_MC-2][i][j] = std::sqrt( mc_err[NUM_MC-2][i][j] );
+			// sys. + stat.
+			mc[NUM_MC-1][i][j] = mc[0][i][j];
+			mc_err[NUM_MC-1][i][j] = mc_err[0][i][j]*mc_err[0][i][j] + diff_mc[i][j]*diff_mc[i][j] + MCTruthError*MCTruthError;
+			mc_err[NUM_MC-1][i][j] = std::sqrt( mc_err[NUM_MC-1][i][j] );
+
+			//For Data
 			// only sys.
 			data[NUM_DATA-2][i][j] = data[0][i][j];
-			double MCTruthError = (mc[0][i][j] - mc[1][i][j]) /mc[0][i][j] *data[0][i][j];
-			data_err[NUM_DATA-2][i][j] = diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
+			MCTruthError = MCTruthError /mc[0][i][j] *data[0][i][j];
+			data_err[NUM_DATA-2][i][j] = diff_data[i][j]*diff_data[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-2][i][j] = std::sqrt( data_err[NUM_DATA-2][i][j] );
 			// sys. + stat.
 			data[NUM_DATA-1][i][j] = data[0][i][j];
-			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
+			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff_data[i][j]*diff_data[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-1][i][j] = std::sqrt( data_err[NUM_DATA-1][i][j] );
 		}
 	}
 
 	// data charge-flip rate 2d plot
 	TH2D *h_data     = new TH2D("hFlipProb_data", "h", NPT, VPTS, NETA, VETAS);
-	TH2D *h_data_sys = new TH2D("hFlipProb_AllSys", "h", NPT, VPTS, NETA, VETAS);
-	TH2D *h_data_tot = new TH2D("hFlipProb_SysAndStat", "h", NPT, VPTS, NETA, VETAS);
-	TH2D *h_mc       = new TH2D("hFlipProb_MCLH", "h", NPT, VPTS, NETA, VETAS);
+	TH2D *h_data_sys = new TH2D("hFlipProb_data_AllSys", "h", NPT, VPTS, NETA, VETAS);
+	TH2D *h_data_tot = new TH2D("hFlipProb_data_SysAndStat", "h", NPT, VPTS, NETA, VETAS);
+	TH2D *h_mc       = new TH2D("hFlipProb_MC", "h", NPT, VPTS, NETA, VETAS);
+	TH2D *h_mc_sys   = new TH2D("hFlipProb_MC_AllSys", "h", NPT, VPTS, NETA, VETAS);
+	TH2D *h_mc_tot   = new TH2D("hFlipProb_MC_SysAndStat", "h", NPT, VPTS, NETA, VETAS);
 	TH2D *h_mc_truth = new TH2D("hFlipProb_MCtruth", "h", NPT, VPTS, NETA, VETAS);
 
 	for (unsigned int i = 0; i < NPT; i++)
@@ -151,16 +166,23 @@ int gen_signal()
 			h_data_sys->SetBinError(i+1, j+1, data_err[NUM_DATA-2][i][j]);
 			h_data_tot->SetBinContent(i+1, j+1, data[NUM_DATA-1][i][j]);
 			h_data_tot->SetBinError(i+1, j+1, data_err[NUM_DATA-1][i][j]);
+
 			h_mc->SetBinContent(i+1, j+1, mc[0][i][j]);
 			h_mc->SetBinError(i+1, j+1, mc_err[0][i][j]);
-			h_mc_truth->SetBinContent(i+1, j+1, mc[1][i][j]);
-			h_mc_truth->SetBinError(i+1, j+1, mc_err[1][i][j]);
+			h_mc_sys->SetBinContent(i+1, j+1, mc[NUM_MC-2][i][j]);
+			h_mc_sys->SetBinError(i+1, j+1, mc_err[NUM_MC-2][i][j]);
+			h_mc_tot->SetBinContent(i+1, j+1, mc[NUM_MC-1][i][j]);
+			h_mc_tot->SetBinError(i+1, j+1, mc_err[NUM_MC-1][i][j]);
+			h_mc_truth->SetBinContent(i+1, j+1, mc[NUM_MC-3][i][j]);
+			h_mc_truth->SetBinError(i+1, j+1, mc_err[NUM_MC-3][i][j]);
 		}
 	}
 	SetStatus(h_data);
 	SetStatus(h_data_sys);
 	SetStatus(h_data_tot);
 	SetStatus(h_mc);
+	SetStatus(h_mc_sys);
+	SetStatus(h_mc_tot);
 	SetStatus(h_mc_truth);
 
 	gStyle->SetPadRightMargin(0.15);
