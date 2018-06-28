@@ -111,18 +111,11 @@ int main(int argc, char* argv[])
 	long long nEntries = (mEvts->tree1)->GetEntries();
 	cout << "Total entries: " << nEntries << endl;
 
-	if (data_type == "data")
-	{
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 20, 20, true);
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 25, 25, true);
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 15, 15, true);
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 75, 105, 20, 20, true);
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 0, 0, false);
-	}
-	else
-	{
-		processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 0, 0, false);
-	}
+	processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 20, 20, true);
+	processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 25, 25, true);
+	processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 15, 15, true);
+	processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 75, 105, 20, 20, true);
+	processEvents(output, data_type, elec_type, mEvts, VETAS, VPTS, 80, 100, 0, 0, false);
 
 	return 0;
 }

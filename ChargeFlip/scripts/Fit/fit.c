@@ -56,41 +56,36 @@ int doFit(bool isData, string elec_type)
 	vector<string> path;
 	path.clear();
 	string path_n, path_nss, output;
-	if (isData)
-	{
-		path.push_back( "80_100_20_20" );
-		path.push_back( "80_100_15_15" );
-		path.push_back( "80_100_25_25" );
-		path.push_back( "75_105_20_20" );
-		path.push_back( "80_100_0_0" );
-	}
-	else
-	{
-		path.push_back( "80_100_0_0" );
-	}
+
+	path.push_back( "80_100_20_20" );
+	path.push_back( "80_100_15_15" );
+	path.push_back( "80_100_25_25" );
+	path.push_back( "75_105_20_20" );
+	path.push_back( "80_100_0_0" );
 
 	for (unsigned int k = 0; k < path.size(); k++)
 	{
+		string data_type;
 		if (isData)
 		{
-			if (k != 4)
-			{
-				path_n   = string("../../run/csv/data_") + elec_type + string("_n_bg_") + path[k] + string(".csv");
-				path_nss = string("../../run/csv/data_") + elec_type + string("_nss_bg_") + path[k] + string(".csv");
-			}
-			else 
-			{
-				path_n   = string("../../run/csv/data_") + elec_type + string("_n_nbg_") + path[k] + string(".csv");
-				path_nss = string("../../run/csv/data_") + elec_type + string("_nss_nbg_") + path[k] + string(".csv");
-			}
-			output   = string("fit_data_") + elec_type + string("_") + path[k] + string(".txt");
+			data_type = "data";
+		}
+		else
+		{
+			data_type = "mc";
+		}
+			
+		if (k != 4)
+		{
+			path_n   = string("../../run/csv/") + data_type + string("_") + elec_type + string("_n_bg_") + path[k] + string(".csv");
+			path_nss = string("../../run/csv/") + data_type + string("_") + elec_type + string("_nss_bg_") + path[k] + string(".csv");
 		}
 		else 
 		{
-			path_n   = string("../../run/csv/mc_") + elec_type + string("_n_nbg_") + path[k] + string(".csv");
-			path_nss = string("../../run/csv/mc_") + elec_type + string("_nss_nbg_") + path[k] + string(".csv");
-			output   = string("fit_mc_") + elec_type + string("_") + path[k] + string(".txt");
+			path_n   = string("../../run/csv/") + data_type + string("_") + elec_type + string("_n_nbg_") + path[k] + string(".csv");
+			path_nss = string("../../run/csv/") + data_type + string("_") + elec_type + string("_nss_nbg_") + path[k] + string(".csv");
 		}
+		output   = string("fit_") + data_type + string("_") + elec_type + string("_") + path[k] + string(".txt");
 
 		if (loadmatrix(path_n, path_nss) == -1)
 			return -1;
