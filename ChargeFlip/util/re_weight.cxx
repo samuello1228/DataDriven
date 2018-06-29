@@ -230,8 +230,8 @@ void processEvents(
 	for (long long i = 0; i < nEntries; i++)
 	{
 		mEvts->GetEntry(i);
-		double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
-		//double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
+		const double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
+		//const double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
 
 		double mll = mEvts->l12.m;
 		double e1_eta = mEvts->leps[0].eta;
@@ -296,30 +296,30 @@ void processEvents(
 			double w_2  = corr[bid2];
 			double qFwt = w_1 * (1-w_2) + w_2 * (1-w_1);
 			qFwt = qFwt / (1-qFwt);
-			weight *= qFwt;
+			double weight_nom = weight * qFwt;
 
 			if (mll > 70 && mll < 80)
 			{
-				n_os[0]+= weight;
+				n_os[0]+= weight_nom;
 			}
 			else if (mll > 100 && mll < 110)
 			{
-				n_os[1]+= weight;
+				n_os[1]+= weight_nom;
 			}
 			else if (mll > 80 && mll < 100)
 			{
-				n_os[2]+= weight;
+				n_os[2]+= weight_nom;
 			}
 
 			for (unsigned int i = 0; i < hist.size(); i++)
 			{
-				hist[i].h_nom->Fill(hist[i].var, weight);
+				hist[i].h_nom->Fill(hist[i].var, weight_nom);
 			}
 
-			h_m_pt_1->Fill(mll, e1_pt, weight);
-			h_m_pt_2->Fill(mll, e2_pt, weight);
-			h_m_eta_1->Fill(mll, e1_eta, weight);
-			h_m_eta_2->Fill(mll, e2_eta, weight);
+			h_m_pt_1->Fill(mll, e1_pt, weight_nom);
+			h_m_pt_2->Fill(mll, e2_pt, weight_nom);
+			h_m_eta_1->Fill(mll, e1_eta, weight_nom);
+			h_m_eta_2->Fill(mll, e2_eta, weight_nom);
 		}
 	}
 
