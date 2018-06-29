@@ -15,6 +15,7 @@
 #include "TLegend.h"
 #include "TMultiGraph.h"
 #include "TString.h"
+#include "TGraphAsymmErrors.h"
 #include "TStyle.h"
 #include "TROOT.h"
 
@@ -25,6 +26,7 @@ void DrawDataMC(TCanvas *c,
 		bool isLogy,
 		TH1D *h_data,
 		TH1D *h_mc, 
+		TGraphAsymmErrors *g_mc,
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -33,7 +35,7 @@ void DrawDataMC(TCanvas *c,
 		string leg_entry_1 = "Observed SS",
 		string leg_entry_2 = "Weighted OS",
 		string leg_format_1 = "lep",
-		string leg_format_2 = "f");
+		string leg_format_2 = "fl");
 void SetStyle();
 int drawPlots(bool isData);
 
@@ -90,6 +92,9 @@ int drawPlots(bool isData)
 		}
 		TH1D *h_data;
 		TH1D *h_mc;
+		TH1D *h_mc_down;
+		TH1D *h_mc_up;
+		TGraphAsymmErrors *g_mc;
 		string x_title;
 		string o_name;
 		bool isLogy;
@@ -110,8 +115,35 @@ int drawPlots(bool isData)
 		TString hName = "h_" + hist[i].o_name;
 		hist[i].h_mc = (TH1D*) f->Get(hName.Data());
 		
-		hName += "_ss";
-		hist[i].h_data = (TH1D*) f->Get(hName.Data());
+		TString hName2 = hName + "_down";
+		hist[i].h_mc_down = (TH1D*) f->Get(hName2.Data());
+		
+		hName2 = hName + "_up";
+		hist[i].h_mc_up = (TH1D*) f->Get(hName2.Data());
+		
+		hName2 = hName + "_ss";
+		hist[i].h_data = (TH1D*) f->Get(hName2.Data());
+		
+		int nbin = hist[i].h_mc->GetNbinsX();
+		hist[i].g_mc = new TGraphAsymmErrors(nbin);
+		
+		for (int j = 0; j < nbin; j++)
+		{
+			double x = hist[i].h_mc->GetBinCenter(j+1);
+			double y = hist[i].h_mc->GetBinContent(j+1);
+			hist[i].g_mc->SetPoint(j,x,y);
+			
+			double xerr_down = hist[i].h_mc->GetBinWidth(j+1) /2;
+			double xerr_up = hist[i].h_mc->GetBinWidth(j+1) /2;
+			double yerr_down = hist[i].h_mc->GetBinContent(j+1) - hist[i].h_mc_down->GetBinContent(j+1);
+			double yerr_up = hist[i].h_mc_up->GetBinContent(j+1) - hist[i].h_mc->GetBinContent(j+1);
+			//cout<<xerr_down<<", "<<x<<", "<<xerr_up<<"; "<<yerr_down<<", "<<y<<", "<<yerr_up<<endl;
+			
+			if(yerr_down<0 || yerr_up<0) cout<<"Error!!!!!!!"<<endl;
+			//cout<<yerr_down<<yerr_up<<endl;
+			
+			hist[i].g_mc->SetPointError(j,xerr_down,xerr_up,yerr_down,yerr_up);
+		}
 		
 		TCanvas *c2 = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
 		TLegend *leg = new TLegend(LEG_LEFT_X, LEG_LEFT_Y, LEG_RIGHT_X, LEG_RIGHT_Y);
@@ -124,7 +156,7 @@ int drawPlots(bool isData)
 		{
 			leg_title = "MC";
 		}
-		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, leg, leg_title, hist[i].x_title);
+		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, leg, leg_title, hist[i].x_title);
 		
 		c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
 		//c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
@@ -138,6 +170,7 @@ void DrawDataMC(TCanvas *c,
 		bool isLogy,
 		TH1D *h_data,
 		TH1D *h_mc, 
+		TGraphAsymmErrors *g_mc,
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -193,10 +226,14 @@ void DrawDataMC(TCanvas *c,
 	double x_tick_length = h_data->GetXaxis()->GetTickLength();
 	double font_size     = h_data->GetYaxis()->GetTitleSize();
 	h_data->GetYaxis()->SetRangeUser(0.8 * min, 1.5 * max);
-	h_mc->SetFillColor(kBlue);
 	h_mc->SetLineColor(kBlue);
 	h_mc->Draw("HIST, SAME");
 	h_data->Draw("E, SAME");
+	
+	g_mc->SetFillColor(kBlue);
+	g_mc->SetFillStyle(3004);
+	g_mc->SetLineColor(kBlue);
+	g_mc->Draw("e2, SAME");
 
 	pad_1->RedrawAxis(); //force the axis redrawing
 
@@ -206,7 +243,7 @@ void DrawDataMC(TCanvas *c,
 	//leg->SetHeader(leg_title.c_str(), "c");
 	leg->SetHeader(leg_title.c_str());
 	leg->AddEntry(h_data, leg_entry_1.c_str(), leg_format_1.c_str());
-	leg->AddEntry(h_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
+	leg->AddEntry(g_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
 	leg->Draw();
 
 	pad_1->Update();
