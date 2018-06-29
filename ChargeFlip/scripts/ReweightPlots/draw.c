@@ -23,7 +23,7 @@ using namespace std;
 
 void DrawDataMC(TCanvas *c, 
 		bool isLogy,
-		TH1D *g_data, 
+		TH1D *h_data,
 		TH1D *g_mc, 
 		TLegend *leg,
 		string leg_title,
@@ -137,7 +137,7 @@ int drawPlots(bool isData)
 
 void DrawDataMC(TCanvas *c, 
 		bool isLogy,
-		TH1D *g_data, 
+		TH1D *h_data,
 		TH1D *g_mc, 
 		TLegend *leg,
 		string leg_title,
@@ -172,32 +172,32 @@ void DrawDataMC(TCanvas *c,
 	}
 	pad_1->cd();
 
-	g_data->SetMarkerSize(0.9);
-	g_data->SetMarkerStyle(20);
-	g_data->SetMarkerColor( kBlack );
-	g_data->SetLineWidth(LINEWIDTH);
-	g_data->SetLineColor(kBlack);
-	g_data->Draw("E");
+	h_data->SetMarkerSize(0.9);
+	h_data->SetMarkerStyle(20);
+	h_data->SetMarkerColor( kBlack );
+	h_data->SetLineWidth(LINEWIDTH);
+	h_data->SetLineColor(kBlack);
+	h_data->Draw("E");
 	
-	double x_label_size = g_data->GetXaxis()->GetLabelSize();
-	double y_label_size = g_data->GetYaxis()->GetLabelSize();
-	g_data->GetXaxis()->SetTitle( x_title.c_str() );
-	g_data->GetXaxis()->CenterTitle();
-	g_data->GetYaxis()->SetTitle( y_title.c_str() );
-	g_data->GetYaxis()->CenterTitle();
-	double max = (g_data->GetMaximum() > g_mc->GetMaximum()) ? g_data->GetMaximum() : g_mc->GetMaximum();
-	double min = (g_data->GetMinimum() < g_mc->GetMinimum()) ? g_data->GetMinimum() : g_mc->GetMinimum(); 
+	double x_label_size = h_data->GetXaxis()->GetLabelSize();
+	double y_label_size = h_data->GetYaxis()->GetLabelSize();
+	h_data->GetXaxis()->SetTitle( x_title.c_str() );
+	h_data->GetXaxis()->CenterTitle();
+	h_data->GetYaxis()->SetTitle( y_title.c_str() );
+	h_data->GetYaxis()->CenterTitle();
+	double max = (h_data->GetMaximum() > g_mc->GetMaximum()) ? h_data->GetMaximum() : g_mc->GetMaximum();
+	double min = (h_data->GetMinimum() < g_mc->GetMinimum()) ? h_data->GetMinimum() : g_mc->GetMinimum();
 	if (min < 1e-5)
 	{
 		min = 1.;
 	}
-	double x_tick_length = g_data->GetXaxis()->GetTickLength();
-	double font_size     = g_data->GetYaxis()->GetTitleSize();
-	g_data->GetYaxis()->SetRangeUser(0.8 * min, 1.5 * max);
+	double x_tick_length = h_data->GetXaxis()->GetTickLength();
+	double font_size     = h_data->GetYaxis()->GetTitleSize();
+	h_data->GetYaxis()->SetRangeUser(0.8 * min, 1.5 * max);
 	g_mc->SetFillColor(kBlue);
 	g_mc->SetLineColor(kBlue);
 	g_mc->Draw("HIST, SAME");
-	g_data->Draw("E, SAME");
+	h_data->Draw("E, SAME");
 
 	pad_1->RedrawAxis(); //force the axis redrawing
 
@@ -206,7 +206,7 @@ void DrawDataMC(TCanvas *c,
 	leg->SetTextSize(0.04);
 	//leg->SetHeader(leg_title.c_str(), "c");
 	leg->SetHeader(leg_title.c_str());
-	leg->AddEntry(g_data, leg_entry_1.c_str(), leg_format_1.c_str());
+	leg->AddEntry(h_data, leg_entry_1.c_str(), leg_format_1.c_str());
 	leg->AddEntry(g_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
 	leg->Draw();
 
@@ -214,8 +214,8 @@ void DrawDataMC(TCanvas *c,
 
 	pad_2->cd();
 	pad_2->SetGridy();
-	TH1D *g_sys = (TH1D*)g_mc->Clone(Form("%s+%s", g_data->GetName(), g_mc->GetName()));
-	g_sys->Divide(g_data);
+	TH1D *g_sys = (TH1D*)g_mc->Clone(Form("%s+%s", h_data->GetName(), g_mc->GetName()));
+	g_sys->Divide(h_data);
 
 	g_sys->SetMarkerSize(0.9);
 	g_sys->SetMarkerStyle(20);
