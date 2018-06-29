@@ -24,7 +24,7 @@ using namespace std;
 void DrawDataMC(TCanvas *c, 
 		bool isLogy,
 		TH1D *h_data,
-		TH1D *g_mc, 
+		TH1D *h_mc, 
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -138,7 +138,7 @@ int drawPlots(bool isData)
 void DrawDataMC(TCanvas *c, 
 		bool isLogy,
 		TH1D *h_data,
-		TH1D *g_mc, 
+		TH1D *h_mc, 
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -185,8 +185,8 @@ void DrawDataMC(TCanvas *c,
 	h_data->GetXaxis()->CenterTitle();
 	h_data->GetYaxis()->SetTitle( y_title.c_str() );
 	h_data->GetYaxis()->CenterTitle();
-	double max = (h_data->GetMaximum() > g_mc->GetMaximum()) ? h_data->GetMaximum() : g_mc->GetMaximum();
-	double min = (h_data->GetMinimum() < g_mc->GetMinimum()) ? h_data->GetMinimum() : g_mc->GetMinimum();
+	double max = (h_data->GetMaximum() > h_mc->GetMaximum()) ? h_data->GetMaximum() : h_mc->GetMaximum();
+	double min = (h_data->GetMinimum() < h_mc->GetMinimum()) ? h_data->GetMinimum() : h_mc->GetMinimum();
 	if (min < 1e-5)
 	{
 		min = 1.;
@@ -194,9 +194,9 @@ void DrawDataMC(TCanvas *c,
 	double x_tick_length = h_data->GetXaxis()->GetTickLength();
 	double font_size     = h_data->GetYaxis()->GetTitleSize();
 	h_data->GetYaxis()->SetRangeUser(0.8 * min, 1.5 * max);
-	g_mc->SetFillColor(kBlue);
-	g_mc->SetLineColor(kBlue);
-	g_mc->Draw("HIST, SAME");
+	h_mc->SetFillColor(kBlue);
+	h_mc->SetLineColor(kBlue);
+	h_mc->Draw("HIST, SAME");
 	h_data->Draw("E, SAME");
 
 	pad_1->RedrawAxis(); //force the axis redrawing
@@ -207,14 +207,14 @@ void DrawDataMC(TCanvas *c,
 	//leg->SetHeader(leg_title.c_str(), "c");
 	leg->SetHeader(leg_title.c_str());
 	leg->AddEntry(h_data, leg_entry_1.c_str(), leg_format_1.c_str());
-	leg->AddEntry(g_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
+	leg->AddEntry(h_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
 	leg->Draw();
 
 	pad_1->Update();
 
 	pad_2->cd();
 	pad_2->SetGridy();
-	TH1D *g_sys = (TH1D*)g_mc->Clone(Form("%s+%s", h_data->GetName(), g_mc->GetName()));
+	TH1D *g_sys = (TH1D*)h_mc->Clone(Form("%s+%s", h_data->GetName(), h_mc->GetName()));
 	g_sys->Divide(h_data);
 
 	g_sys->SetMarkerSize(0.9);
