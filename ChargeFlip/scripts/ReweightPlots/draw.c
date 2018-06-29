@@ -14,11 +14,11 @@
 #include "TH1D.h"
 #include "TLegend.h"
 #include "TMultiGraph.h"
+#include "TString.h"
 #include "TStyle.h"
 #include "TROOT.h"
 
 using namespace std;
-#define GetHist(x) {x = (TH1D*)f->Get(#x);}
 #define PRINT(x) {std::cout << #x << " = " << x << std::endl;}
 
 void DrawDataMC(TCanvas *c, 
@@ -70,7 +70,7 @@ int drawPlots(bool isData)
 	}
 	else 
 	{
-		file   = "../../run/checks_weight/mc_80_100_0_0.root";
+		file   = "../../run/checks_weight/mc_80_100_20_20.root";
 		output = "./plots/mc_";
 	}
 	TFile *f = new TFile(file.c_str());
@@ -79,44 +79,11 @@ int drawPlots(bool isData)
 		cerr << "Cannot open file : " << file << endl;
 		return -1;
 	}
-	TH1D *h_mll;
-	TH1D *h_mll_ss;
-	TH1D *h_pt_1;
-	TH1D *h_pt_1_ss;
-	TH1D *h_pt_2;
-	TH1D *h_pt_2_ss;
-	TH1D *h_eta_1;
-	TH1D *h_eta_1_ss;
-	TH1D *h_eta_2;
-	TH1D *h_eta_2_ss;
-	TH1D *h_phi_1;
-	TH1D *h_phi_1_ss;
-	TH1D *h_phi_2;
-	TH1D *h_phi_2_ss;
-	GetHist(h_mll);
-	GetHist(h_mll_ss);
-	GetHist(h_pt_1);
-	GetHist(h_pt_1_ss);
-	GetHist(h_pt_2);
-	GetHist(h_pt_2_ss);
-	GetHist(h_eta_1);
-	GetHist(h_eta_1_ss);
-	GetHist(h_eta_2);
-	GetHist(h_eta_2_ss);
-	GetHist(h_phi_1);
-	GetHist(h_phi_1_ss);
-	GetHist(h_phi_2);
-	GetHist(h_phi_2_ss);
 	
-	vector<TCanvas*> c;
-	c.clear();
-	
-	struct data 
+	struct VariableData
 	{
-		data(TH1D *h1, TH1D *h2, string title, string name, bool islog = true)
+		VariableData(string title, string name, bool islog = true)
 		{
-			h_data  = h1;
-			h_mc    = h2;
 			x_title = title;
 			o_name  = name;
 			isLogy  = islog;
@@ -128,20 +95,27 @@ int drawPlots(bool isData)
 		bool isLogy;
 	};
 	
-	vector<data> hist;
+	vector<VariableData> hist;
 	hist.clear();
-	hist.push_back( data(h_mll_ss,   h_mll,   "m_{ll} (GeV)",           "mll"));
-	hist.push_back( data(h_pt_1_ss,  h_pt_1,  "leading #font[52]{p}_{T} (GeV)",    "pt_1"));
-	hist.push_back( data(h_pt_2_ss,  h_pt_2,  "subleading #font[52]{p}_{T} (GeV)", "pt_2"));
-	hist.push_back( data(h_eta_1_ss, h_eta_1, "leading #eta",                      "eta_1", false));
-	hist.push_back( data(h_eta_2_ss, h_eta_2, "subleading #eta",                   "eta_2", false));
-	hist.push_back( data(h_phi_1_ss, h_phi_1, "leading #phi",                      "phi_1", false));
-	hist.push_back( data(h_phi_2_ss, h_phi_2, "subleading #phi",                   "phi_2", false));
+	hist.push_back( VariableData("m_{ll} (GeV)",                      "mll"));
+	hist.push_back( VariableData("leading #font[52]{p}_{T} (GeV)",    "pt_1"));
+	hist.push_back( VariableData("subleading #font[52]{p}_{T} (GeV)", "pt_2"));
+	hist.push_back( VariableData("leading #eta",                      "eta_1", false));
+	hist.push_back( VariableData("subleading #eta",                   "eta_2", false));
+	hist.push_back( VariableData("leading #phi",                      "phi_1", false));
+	hist.push_back( VariableData("subleading #phi",                   "phi_2", false));
 
 	cout << hist.size() << endl;
 
+	vector<TCanvas*> c;
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
+		TString hName = "h_" + hist[i].o_name;
+		hist[i].h_mc = (TH1D*) f->Get(hName.Data());
+		
+		hName += "_ss";
+		hist[i].h_data = (TH1D*) f->Get(hName.Data());
+		
 		TCanvas *tmp = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
 		TLegend *leg = new TLegend(LEG_LEFT_X, LEG_LEFT_Y, LEG_RIGHT_X, LEG_RIGHT_Y);
 		c.push_back( tmp );
