@@ -230,7 +230,9 @@ void processEvents(
 	for (long long i = 0; i < nEntries; i++)
 	{
 		mEvts->GetEntry(i);
-		double w_1, w_2, weight;
+		double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
+		//double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
+
 		double mll = mEvts->l12.m;
 		double e1_eta = mEvts->leps[0].eta;
 		double e1_pt  = mEvts->leps[0].pt;
@@ -280,20 +282,21 @@ void processEvents(
 
 			for (unsigned int i = 0; i < hist.size(); i++)
 			{
-				hist[i].h_nom_ss->Fill(hist[i].var);
+				hist[i].h_nom_ss->Fill(hist[i].var, weight);
 			}
 
-			h_m_pt_1_ss->Fill(mll, e1_pt);
-			h_m_pt_2_ss->Fill(mll, e2_pt);
-			h_m_eta_1_ss->Fill(mll, e1_eta);
-			h_m_eta_2_ss->Fill(mll, e2_eta);
+			h_m_pt_1_ss->Fill(mll, e1_pt, weight);
+			h_m_pt_2_ss->Fill(mll, e2_pt, weight);
+			h_m_eta_1_ss->Fill(mll, e1_eta, weight);
+			h_m_eta_2_ss->Fill(mll, e2_eta, weight);
 		}
 		else
 		{
-			w_1  = corr[bid1];
-			w_2  = corr[bid2];
-			weight = w_1 * (1-w_2) + w_2 * (1-w_1);
-			weight = weight / (1-weight);
+			double w_1  = corr[bid1];
+			double w_2  = corr[bid2];
+			double qFwt = w_1 * (1-w_2) + w_2 * (1-w_1);
+			qFwt = qFwt / (1-qFwt);
+			weight *= qFwt;
 
 			if (mll > 70 && mll < 80)
 			{
@@ -429,7 +432,10 @@ void LoadCorr(string file)
 			//cout<<h->GetBinContent(j,i)<<", "<<h->GetBinError(j,i)<<endl;
 			int bid = (i-1)*(NPT-1) + j-1;
 			corr[bid] = h->GetBinContent(j,i);
-			corr_down[bid] = h->GetBinContent(j,i) - h->GetBinError(j,i);
+
+			if(h->GetBinError(j,i) < h->GetBinContent(j,i)) corr_down[bid] = h->GetBinContent(j,i) - h->GetBinError(j,i);
+			else corr_down[bid] = 0;
+			
 			corr_up[bid]   = h->GetBinContent(j,i) + h->GetBinError(j,i);
 			cout<<corr_down[bid]<<", "<<corr[bid]<<", "<<corr_up[bid]<<endl;
 		}
