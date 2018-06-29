@@ -231,9 +231,18 @@ void processEvents(
 	for (long long i = 0; i < nEntries; i++)
 	{
 		mEvts->GetEntry(i);
-		const double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
-		//const double weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
 
+		double weight;
+		if (data_type == "data")
+		{
+			weight = 1;
+		}
+		else
+		{
+			weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
+			//weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
+		}
+		
 		double mll = mEvts->l12.m;
 		double e1_eta = mEvts->leps[0].eta;
 		double e1_pt  = mEvts->leps[0].pt;
