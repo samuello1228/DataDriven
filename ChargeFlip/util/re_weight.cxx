@@ -298,6 +298,18 @@ void processEvents(
 			qFwt = qFwt / (1-qFwt);
 			double weight_nom = weight * qFwt;
 
+			double w_1_down  = corr_down[bid1];
+			double w_2_down  = corr_down[bid2];
+			double qFwt_down = w_1_down * (1-w_2_down) + w_2_down * (1-w_1_down);
+			qFwt_down = qFwt_down / (1-qFwt_down);
+			double weight_down = weight * qFwt_down;
+
+			double w_1_up  = corr_up[bid1];
+			double w_2_up  = corr_up[bid2];
+			double qFwt_up = w_1_up * (1-w_2_up) + w_2_up * (1-w_1_up);
+			qFwt_up = qFwt_up / (1-qFwt_up);
+			double weight_up = weight * qFwt_up;
+
 			if (mll > 70 && mll < 80)
 			{
 				n_os[0]+= weight_nom;
@@ -314,6 +326,8 @@ void processEvents(
 			for (unsigned int i = 0; i < hist.size(); i++)
 			{
 				hist[i].h_nom->Fill(hist[i].var, weight_nom);
+				hist[i].h_down->Fill(hist[i].var, weight_down);
+				hist[i].h_up->Fill(hist[i].var, weight_up);
 			}
 
 			h_m_pt_1->Fill(mll, e1_pt, weight_nom);
@@ -326,6 +340,8 @@ void processEvents(
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
 		hist[i].h_nom->Write();
+		hist[i].h_down->Write();
+		hist[i].h_up->Write();
 		hist[i].h_nom_ss->Write();
 	}
 
