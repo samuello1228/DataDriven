@@ -164,7 +164,7 @@ void processEvents(
 
 	struct Variable 
 	{
-		Variable(TString name_new, int nbin_new, int xlow_new, int xup_new)
+		Variable(TString name_new, int nbin_new, double xlow_new, double xup_new)
 		{
 			name = name_new;
 			nbin = nbin_new;
@@ -178,8 +178,8 @@ void processEvents(
 		TH1D *h_nom_ss;
 		TString name;
 		int nbin;
-		int xlow;
-		int xup;
+		double xlow;
+		double xup;
 		double var;
 	};
 
