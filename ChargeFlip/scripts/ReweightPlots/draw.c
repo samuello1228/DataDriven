@@ -31,7 +31,7 @@ void DrawDataMC(TCanvas *c,
 		string y_title = "Events",
 		string z_title = "#frac{#font[52]{N}_{expected}}{#font[52]{N}_{observed}}",
 		string leg_entry_1 = "Observed SS",
-		string leg_entry_2 = "Expected SS",
+		string leg_entry_2 = "Weighted OS",
 		string leg_format_1 = "lep",
 		string leg_format_2 = "f");
 void SetStyle();
@@ -105,9 +105,6 @@ int drawPlots(bool isData)
 	hist.push_back( VariableData("leading #phi",                      "phi_1", false));
 	hist.push_back( VariableData("subleading #phi",                   "phi_2", false));
 
-	cout << hist.size() << endl;
-
-	vector<TCanvas*> c;
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
 		TString hName = "h_" + hist[i].o_name;
@@ -116,9 +113,8 @@ int drawPlots(bool isData)
 		hName += "_ss";
 		hist[i].h_data = (TH1D*) f->Get(hName.Data());
 		
-		TCanvas *tmp = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
+		TCanvas *c2 = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
 		TLegend *leg = new TLegend(LEG_LEFT_X, LEG_LEFT_Y, LEG_RIGHT_X, LEG_RIGHT_Y);
-		c.push_back( tmp );
 		string leg_title;
 	   	if (isData)
 		{
@@ -128,8 +124,11 @@ int drawPlots(bool isData)
 		{
 			leg_title = "MC";
 		}
-		DrawDataMC(c[i], hist[i].isLogy, hist[i].h_data, hist[i].h_mc, leg, leg_title, hist[i].x_title);
-		c[i]->SaveAs( (output + hist[i].o_name + ".eps").c_str() );
+		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, leg, leg_title, hist[i].x_title);
+		
+		c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
+		//c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
+		delete c2;
 	}
 
 	return 0;
