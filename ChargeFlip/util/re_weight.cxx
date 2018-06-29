@@ -185,12 +185,12 @@ void processEvents(
 
 	vector<Variable> hist;
 	hist.push_back( Variable("mll",50,20,200) );
-	hist.push_back( Variable("eta_1",50,-2.47,2.47) );
-	hist.push_back( Variable("eta_2",50,-2.47,2.47) );
+	hist.push_back( Variable("eta_1",20,-2.5,2.5) );
+	hist.push_back( Variable("eta_2",20,-2.5,2.5) );
 	hist.push_back( Variable("pt_1",50,0,500) );
 	hist.push_back( Variable("pt_2",50,0,500) );
-	hist.push_back( Variable("phi_1",50,-TMath::Pi(),TMath::Pi()) );
-	hist.push_back( Variable("phi_2",50,-TMath::Pi(),TMath::Pi()) );
+	hist.push_back( Variable("phi_1",25,-TMath::Pi(),TMath::Pi()) );
+	hist.push_back( Variable("phi_2",25,-TMath::Pi(),TMath::Pi()) );
 
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
@@ -205,6 +205,7 @@ void processEvents(
 
 		hName2 = hName + "_ss";
 		hist[i].h_nom_ss = new TH1D(hName2.Data(), hName2.Data(), hist[i].nbin, hist[i].xlow, hist[i].xup);
+		hist[i].h_nom_ss->Sumw2();
 	}
 
 	TH2D *h_m_eta_1    = new TH2D("h_m_eta_1",   "h_m_eta", 50, 20, 200, 50, -2.47, 2.47);
