@@ -264,25 +264,25 @@ void DrawDataMC(TCanvas *c,
 
 	pad_2->cd();
 	pad_2->SetGridy();
-	TH1D *g_ratio = (TH1D*)h_mc->Clone(Form("%s+%s", h_data->GetName(), h_mc->GetName()));
-	g_ratio->Divide(h_data);
+	TH1D *h_ratio = (TH1D*)h_mc->Clone(Form("%s+%s", h_data->GetName(), h_mc->GetName()));
+	h_ratio->Divide(h_data);
 
-	g_ratio->SetMarkerSize(0.9);
-	g_ratio->SetMarkerStyle(20);
-	g_ratio->SetMarkerColor( kBlack );
-	g_ratio->SetLineWidth(LINEWIDTH);
-	g_ratio->SetLineColor(kBlack);
-	g_ratio->Draw("E");
-	g_ratio->GetYaxis()->SetTitle( z_title.c_str() );
-	g_ratio->GetYaxis()->CenterTitle();
-	g_ratio->GetXaxis()->SetTitle(0);
-	g_ratio->GetYaxis()->SetTitleSize( font_size * (1-size) / size * 0.8 );
-	g_ratio->GetYaxis()->SetTitleOffset( 0.4 );
-	g_ratio->GetYaxis()->SetRangeUser(0.0, 3.0);
-	g_ratio->GetYaxis()->SetNdivisions(505);
-	g_ratio->GetXaxis()->SetLabelSize( x_label_size * (1-size) / size );
-	g_ratio->GetYaxis()->SetLabelSize( y_label_size * (1-size) / size );
-	g_ratio->GetXaxis()->SetTickLength( x_tick_length * (1-size) / size );
+	h_ratio->SetMarkerSize(0.9);
+	h_ratio->SetMarkerStyle(20);
+	h_ratio->SetMarkerColor( kBlack );
+	h_ratio->SetLineWidth(LINEWIDTH);
+	h_ratio->SetLineColor(kBlack);
+	h_ratio->Draw("E");
+	h_ratio->GetYaxis()->SetTitle( z_title.c_str() );
+	h_ratio->GetYaxis()->CenterTitle();
+	h_ratio->GetXaxis()->SetTitle(0);
+	h_ratio->GetYaxis()->SetTitleSize( font_size * (1-size) / size * 0.8 );
+	h_ratio->GetYaxis()->SetTitleOffset( 0.4 );
+	h_ratio->GetYaxis()->SetRangeUser(0.0, 3.0);
+	h_ratio->GetYaxis()->SetNdivisions(505);
+	h_ratio->GetXaxis()->SetLabelSize( x_label_size * (1-size) / size );
+	h_ratio->GetYaxis()->SetLabelSize( y_label_size * (1-size) / size );
+	h_ratio->GetXaxis()->SetTickLength( x_tick_length * (1-size) / size );
 
 	pad_2->Update();
 	
