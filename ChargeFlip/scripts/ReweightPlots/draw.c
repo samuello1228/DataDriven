@@ -138,25 +138,25 @@ int drawPlots(bool isData)
 			double xerr_down = hist[i].h_mc->GetBinWidth(j+1) /2;
 			double xerr_up = hist[i].h_mc->GetBinWidth(j+1) /2;
 			
-			double ydown = hist[i].h_mc_down->GetBinContent(j+1);
-			double yup = hist[i].h_mc_up->GetBinContent(j+1);
+			double y_down = hist[i].h_mc_down->GetBinContent(j+1);
+			double y_up = hist[i].h_mc_up->GetBinContent(j+1);
 			
-			if(0<=ydown && ydown <= y && y <= yup)
+			if(0<=y_down && y_down <= y && y <= y_up)
 			{
 			}
-			else if(ydown > y && y > yup && yup<0)
+			else if(y_down > y && y > y_up && y_up<0)
 			{
-				ydown = hist[i].h_mc_up->GetBinContent(j+1);
-				yup = hist[i].h_mc_down->GetBinContent(j+1);
+				y_down = hist[i].h_mc_up->GetBinContent(j+1);
+				y_up = hist[i].h_mc_down->GetBinContent(j+1);
 			}
 			else
 			{
 				cout<<"Error!!!!!!!"<<endl;
-				cout<<ydown<<", "<<y<<", "<<yup<<endl;
+				cout<<y_down<<", "<<y<<", "<<y_up<<endl;
 			}
 			
-			double yerr_down = y - ydown;
-			double yerr_up = yup - y;
+			double yerr_down = y - y_down;
+			double yerr_up = y_up - y;
 			//cout<<xerr_down<<", "<<x<<", "<<xerr_up<<"; "<<yerr_down<<", "<<y<<", "<<yerr_up<<endl;
 			hist[i].g_mc->SetPointError(j,xerr_down,xerr_up,yerr_down,yerr_up);
 		}
