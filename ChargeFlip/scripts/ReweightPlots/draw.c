@@ -31,7 +31,7 @@ void DrawDataMC(TCanvas *c,
 		string leg_title,
 		string x_title,
 		string y_title = "Events",
-		string z_title = "#frac{#font[52]{N}_{expected}}{#font[52]{N}_{observed}}",
+		string z_title = "#frac{#font[52]{N}_{Weighted OS}}{#font[52]{N}_{Observed SS}}",
 		string leg_entry_1 = "Observed SS",
 		string leg_entry_2 = "Weighted OS",
 		string leg_format_1 = "lep",
@@ -129,20 +129,22 @@ int drawPlots(bool isData)
 		
 		for (int j = 0; j < nbin; j++)
 		{
+			//set point
 			double x = hist[i].h_mc->GetBinCenter(j+1);
 			double y = hist[i].h_mc->GetBinContent(j+1);
 			hist[i].g_mc->SetPoint(j,x,y);
 			
+			//set point error
 			double xerr_down = hist[i].h_mc->GetBinWidth(j+1) /2;
 			double xerr_up = hist[i].h_mc->GetBinWidth(j+1) /2;
 			
 			double ydown = hist[i].h_mc_down->GetBinContent(j+1);
 			double yup = hist[i].h_mc_up->GetBinContent(j+1);
 			
-			if(ydown <= y && y <= yup)
+			if(0<=ydown && ydown <= y && y <= yup)
 			{
 			}
-			else if(ydown > y && y > yup)
+			else if(ydown > y && y > yup && yup<0)
 			{
 				ydown = hist[i].h_mc_up->GetBinContent(j+1);
 				yup = hist[i].h_mc_down->GetBinContent(j+1);
