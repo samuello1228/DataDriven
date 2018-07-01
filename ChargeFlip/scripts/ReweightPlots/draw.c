@@ -27,6 +27,7 @@ void DrawDataMC(TCanvas *c,
 		TH1D *h_data,
 		TH1D *h_mc, 
 		TGraphAsymmErrors *g_mc,
+		TGraphAsymmErrors *g_ratio,
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -127,6 +128,8 @@ int drawPlots(bool isData)
 		int nbin = hist[i].h_mc->GetNbinsX();
 		hist[i].g_mc = new TGraphAsymmErrors(nbin);
 		
+		TGraphAsymmErrors* g_ratio = new TGraphAsymmErrors(nbin);
+		
 		for (int j = 0; j < nbin; j++)
 		{
 			//set point
@@ -159,6 +162,27 @@ int drawPlots(bool isData)
 			double yerr_up = y_up - y;
 			//cout<<xerr_down<<", "<<x<<", "<<xerr_up<<"; "<<yerr_down<<", "<<y<<", "<<yerr_up<<endl;
 			hist[i].g_mc->SetPointError(j,xerr_down,xerr_up,yerr_down,yerr_up);
+			
+			//set ratio plot
+			double y_ss = hist[i].h_data->GetBinContent(j+1);
+			double y_ss_error = hist[i].h_data->GetBinError(j+1);
+			double y_ss_down = y_ss - y_ss_error;
+			double y_ss_up = y_ss + y_ss_error;
+			
+			if(y_down>0 && y_ss_down>0)
+			{
+				double ratio = y/y_ss;
+				g_ratio->SetPoint(j,x,ratio);
+				
+				double ratio_down = y_down/y_ss_up;
+				double ratio_up = y_up/y_ss_down;
+				g_ratio->SetPointError(j,xerr_down,xerr_up, ratio - ratio_down, ratio_up - ratio);
+			}
+			else
+			{
+				g_ratio->SetPoint(j,x,-99);
+				g_ratio->SetPointError(j,xerr_down,xerr_up,0,0);
+			}
 		}
 		
 		TCanvas *c2 = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
@@ -172,10 +196,11 @@ int drawPlots(bool isData)
 		{
 			leg_title = "MC";
 		}
-		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, leg, leg_title, hist[i].x_title);
+		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, g_ratio, leg, leg_title, hist[i].x_title);
 		
 		c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
 		//c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
+		delete g_ratio;
 		delete c2;
 	}
 
@@ -187,6 +212,7 @@ void DrawDataMC(TCanvas *c,
 		TH1D *h_data,
 		TH1D *h_mc, 
 		TGraphAsymmErrors *g_mc,
+		TGraphAsymmErrors *g_ratio,
 		TLegend *leg,
 		string leg_title,
 		string x_title,
@@ -269,12 +295,8 @@ void DrawDataMC(TCanvas *c,
 	TH1D *h_ratio = (TH1D*)h_mc->Clone(Form("%s+%s", h_data->GetName(), h_mc->GetName()));
 	h_ratio->Divide(h_data);
 
-	h_ratio->SetMarkerSize(0.9);
-	h_ratio->SetMarkerStyle(20);
-	h_ratio->SetMarkerColor( kBlack );
-	h_ratio->SetLineWidth(LINEWIDTH);
-	h_ratio->SetLineColor(kBlack);
-	h_ratio->Draw("E");
+	h_ratio->SetLineColor(kBlue);
+	h_ratio->Draw("HIST");
 	h_ratio->GetYaxis()->SetTitle( z_title.c_str() );
 	h_ratio->GetYaxis()->CenterTitle();
 	h_ratio->GetXaxis()->SetTitle(0);
@@ -285,9 +307,13 @@ void DrawDataMC(TCanvas *c,
 	h_ratio->GetXaxis()->SetLabelSize( x_label_size * (1-size) / size );
 	h_ratio->GetYaxis()->SetLabelSize( y_label_size * (1-size) / size );
 	h_ratio->GetXaxis()->SetTickLength( x_tick_length * (1-size) / size );
+	
+	g_ratio->SetFillColor(kBlue);
+	g_ratio->SetFillStyle(3004);
+	g_ratio->SetLineColor(kBlue);
+	g_ratio->Draw("e2, SAME");
 
 	pad_2->Update();
-	
 }
 
 void SetStyle()
