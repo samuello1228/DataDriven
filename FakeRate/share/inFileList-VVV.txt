@@ -1,0 +1,4 @@
+user.ggallard.v11.5.MCTC.mc15_13TeV.407311.Sherpa_221_NNPDF30NNLO_6l0v_EW6_myOutput.root/user.ggallard.11788669._000001.myOutput.root
+user.ggallard.v11.5.MCTC.mc15_13TeV.407312.Sherpa_221_NNPDF30NNLO_5l1v_EW6_myOutput.root/user.ggallard.11788676._000001.myOutput.root
+user.ggallard.v11.5.MCTC.mc15_13TeV.407313.Sherpa_221_NNPDF30NNLO_4l2v_EW6_myOutput.root/user.ggallard.11788681._000001.myOutput.root
+user.ggallard.v11.5.MCTC.mc15_13TeV.407315.Sherpa_221_NNPDF30NNLO_2l4v_EW6_myOutput.root/user.ggallard.11788691._000001.myOutput.root
