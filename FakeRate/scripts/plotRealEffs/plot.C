@@ -35,7 +35,7 @@ void Draw(TString treeName,unsigned int NETA)
         h2[j] = new TH1D(Name.Data(),Name.Data(),NPT, PT);
     }
     
-    TFile* file = new TFile("fake_rate.root","READ");
+    TFile* file = new TFile("../../run/output/tag_probe/fake_rate.root","READ");
     TH2D *h1 = (TH2D*) file->Get(treeName.Data());
     for(unsigned int i=1;i<=NPT;i++)
     {
