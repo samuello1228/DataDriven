@@ -53,10 +53,12 @@ enum LEP_TYPE
 
 const double ETA_EL[] = {0, 1.37, 2.47};
 const double ETA_MU[] = {0, 2.47};
-const double PT[]  = {20, 25, 30, 40, 200};
+const double PT_EL[]  = {20, 25, 30, 40, 200};
+const double PT_MU[]  = {20, 25, 30, 40, 200};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
-const unsigned int NPT     = sizeof(PT)  / sizeof(PT[0]) - 1;
+const unsigned int NPT_EL  = sizeof(PT_EL)  / sizeof(PT_EL[0])  - 1;
+const unsigned int NPT_MU  = sizeof(PT_MU)  / sizeof(PT_MU[0])  - 1;
 
 struct Histo 
 {
@@ -65,13 +67,13 @@ struct Histo
 		_e = e;
 		if (e == LEP_TYPE::ELEC)
 		{
-			hTight = new TH2D(name+"_hTight", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_EL, ETA_EL);
-			hLoose = new TH2D(name+"_hLoose", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_EL, ETA_EL);
+			hTight = new TH2D(name+"_hTight", ";p_{T} [GeV];|#eta|", NPT_EL, PT_EL, NETA_EL, ETA_EL);
+			hLoose = new TH2D(name+"_hLoose", ";p_{T} [GeV];|#eta|", NPT_EL, PT_EL, NETA_EL, ETA_EL);
 		}
 		else 
 		{
-			hTight = new TH2D(name+"_hTight", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_MU, ETA_MU);
-			hLoose = new TH2D(name+"_hLoose", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_MU, ETA_MU);
+			hTight = new TH2D(name+"_hTight", ";p_{T} [GeV];|#eta|", NPT_MU, PT_MU, NETA_MU, ETA_MU);
+			hLoose = new TH2D(name+"_hLoose", ";p_{T} [GeV];|#eta|", NPT_MU, PT_MU, NETA_MU, ETA_MU);
 		}
 		hTight->Sumw2();
 		hLoose->Sumw2();
@@ -517,12 +519,14 @@ char* itoa(int num, char* str,int radix)
 
 bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
 {
-	if (pt < PT[0] || pt > PT[NPT])
-	{
-		return false;
-	}
+
 	if (e == LEP_TYPE::ELEC)
 	{
+		if (pt < PT_EL[0] || pt > PT_EL[NPT_EL])
+		{
+			return false;
+		}
+		
 		if (fabs(eta) < ETA_EL[0] || fabs(eta) > ETA_EL[NETA_EL])
 		{
 			return false;
@@ -534,6 +538,11 @@ bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
 	}
 	else 
 	{
+		if (pt < PT_MU[0] || pt > PT_MU[NPT_MU])
+		{
+			return false;
+		}
+		
 		if (fabs(eta) < ETA_MU[0] || fabs(eta) > ETA_MU[NETA_MU])
 		{
 			return false;
