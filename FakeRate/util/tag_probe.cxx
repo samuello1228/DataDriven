@@ -50,7 +50,7 @@ enum LEP_TYPE
 	MUON,
 };
 
-const double ETA_EL[] = {0, 0.8, 1.37, 1.52, 2.00, 2.47};
+const double ETA_EL[] = {0, 0.8, 1.37, 1.52, 2.01, 2.47};
 const double ETA_MU[] = {0, 0.6, 1.2, 1.8, 2.5};
 const double PT[]  = {20, 30, 40, 50, 60, 70, 80, 90, 100, 200};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
