@@ -51,10 +51,10 @@ enum LEP_TYPE
 	MUON,
 };
 
-const double ETA_EL[] = {0, 1.37, 2.47};
-const double ETA_MU[] = {0, 2.47};
-const double PT_EL[]  = {20, 25, 30, 40, 200};
-const double PT_MU[]  = {20, 25, 30, 40, 200};
+const double ETA_EL[] = {0, 1.37, 1.52, 2.47};
+const double ETA_MU[] = {0, 1.37, 1.52, 2.5};
+const double PT_EL[]  = {25, 35, 45, 200, 500};
+const double PT_MU[]  = {25, 30, 45, 200, 500};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
 const unsigned int NPT_EL  = sizeof(PT_EL)  / sizeof(PT_EL[0])  - 1;
