@@ -18,14 +18,16 @@
 #include "AtlasLabels.C"
 #include "AtlasStyle.C"
 
-const double ETA_EL[] = {0, 1.37, 2.47};
-const double ETA_MU[] = {0, 2.47};
-const double PT[]  = {20, 25, 30, 40, 200};
+const double ETA_EL[] = {0, 1.37, 1.52, 2.47};
+const double ETA_MU[] = {0, 1.37, 1.52, 2.5};
+const double PT_EL[]  = {25, 35, 45, 200, 500};
+const double PT_MU[]  = {25, 30, 45, 200, 500};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
-const unsigned int NPT     = sizeof(PT)  / sizeof(PT[0]) - 1;
+const unsigned int NPT_EL  = sizeof(PT_EL)  / sizeof(PT_EL[0])  - 1;
+const unsigned int NPT_MU  = sizeof(PT_MU)  / sizeof(PT_MU[0])  - 1;
 
-void GetEffs(TString lepton_type,unsigned int NETA,TH2D* hEff)
+void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned int NPT,const double PT[],TH2D* hEff)
 {
     TFile* data = new TFile("../../run/output/fr_mxm/data_fr_mxm.root","READ");
     TH2D *hTight_data = (TH2D*) data->Get(lepton_type+"_hTight");
@@ -79,16 +81,19 @@ void GetEffs(TString lepton_type,unsigned int NETA,TH2D* hEff)
     SetAtlasStyle();
     
     h2[1]->SetLineColor(kBlue);
-    if(lepton_type=="El") h2[2]->SetLineColor(kRed);
+    h2[2]->SetLineColor(kRed);
+    h2[3]->SetLineColor(kGreen);
     
     h2[1]->SetMarkerStyle(20);
-    if(lepton_type=="El") h2[2]->SetMarkerStyle(21);
+    h2[2]->SetMarkerStyle(21);
+    h2[3]->SetMarkerStyle(22);
     
     h2[1]->SetMarkerColor(kBlue);
-    if(lepton_type=="El") h2[2]->SetMarkerColor(kRed);
+    h2[2]->SetMarkerColor(kRed);
+    h2[3]->SetMarkerColor(kGreen);
     
     h2[1]->GetXaxis()->SetTitle("p_{T} [GeV]");
-    h2[1]->GetYaxis()->SetRangeUser(0,0.5);
+    h2[1]->GetYaxis()->SetRangeUser(-1,2);
     
     if(lepton_type=="El") h2[1]->GetYaxis()->SetTitle("Electron Fake Efficiency");
     else if(lepton_type=="Mu") h2[1]->GetYaxis()->SetTitle("Muon Fake Efficiency");
@@ -98,7 +103,10 @@ void GetEffs(TString lepton_type,unsigned int NETA,TH2D* hEff)
     gStyle->SetOptStat(0);
     
     h2[1]->Draw();
-    if(lepton_type=="El") h2[2]->Draw("same");
+    for(unsigned int j=2;j<=NETA;j++)
+    {
+        h2[j]->Draw("same");
+    }
     
     ATLASLabel(0.2,0.88,"Internal");
     
@@ -116,18 +124,9 @@ void GetEffs(TString lepton_type,unsigned int NETA,TH2D* hEff)
     for(unsigned int j=1;j<=NETA;j++)
     {
         TString Name;
-        if(lepton_type=="El")
-        {
-            Name = TString::Format("%.2f",ETA_EL[j-1]);
-            Name += "<|#eta|<";
-            Name += TString::Format("%.2f",ETA_EL[j]);
-        }
-        else if(lepton_type=="Mu")
-        {
-            Name = TString::Format("%.2f",ETA_MU[j-1]);
-            Name += "<|#eta|<";
-            Name += TString::Format("%.2f",ETA_MU[j]);
-        }
+        Name = TString::Format("%.2f",ETA[j-1]);
+        Name += "<|#eta|<";
+        Name += TString::Format("%.2f",ETA[j]);
         
         leg->AddEntry(h2[j],Name.Data(),"pl");
     }
@@ -148,13 +147,13 @@ void GetEffs(TString lepton_type,unsigned int NETA,TH2D* hEff)
 void getFakeEffs()
 {
     TFile* fake_eff = new TFile("fake_eff.root","RECREATE");
-    TH2D* El_hEff = new TH2D("El_hEff", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_EL, ETA_EL);
-    GetEffs("El",NETA_EL,El_hEff);
+    TH2D* El_hEff = new TH2D("El_hEff", ";p_{T} [GeV];|#eta|", NPT_EL, PT_EL, NETA_EL, ETA_EL);
+    GetEffs("El", NETA_EL, ETA_EL, NPT_EL, PT_EL, El_hEff);
     fake_eff->cd();
     El_hEff->Write();
     
-    TH2D* Mu_hEff = new TH2D("Mu_hEff", ";p_{T} [GeV];|#eta|", NPT, PT, NETA_MU, ETA_MU);
-    GetEffs("Mu",NETA_MU,Mu_hEff);
+    TH2D* Mu_hEff = new TH2D("Mu_hEff", ";p_{T} [GeV];|#eta|", NPT_MU, PT_MU, NETA_MU, ETA_MU);
+    GetEffs("Mu", NETA_MU, ETA_MU, NPT_MU, PT_MU, Mu_hEff);
     fake_eff->cd();
     Mu_hEff->Write();
     
