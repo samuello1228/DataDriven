@@ -134,9 +134,11 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
     
     for(unsigned int i=1;i<=NPT;i++)
     {
+        cout<<"For "<<PT[i-1]<<" < pt < "<<PT[i]<<" :"<<endl;
         for(unsigned int j=1;j<=NETA;j++)
         {
-            cout<<hEff->GetBinContent(i,j)<<", "<<hEff->GetBinError(i,j)<<endl;
+            cout<<"For "<<ETA[j-1]<<" < |eta| < "<<ETA[j]<<" : ";
+            cout<<hEff->GetBinContent(i,j)<<" +/- "<<hEff->GetBinError(i,j)<<endl;
             h2[j]->SetBinContent(i,hEff->GetBinContent(i,j));
             h2[j]->SetBinError(i,hEff->GetBinError(i,j));
         }
