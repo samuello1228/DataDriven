@@ -104,7 +104,7 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC);
 bool ptEtaRequirement(double pt, double eta, LEP_TYPE e);
 bool passMuonCR(susyEvts* tree);
 bool passElectronCR(susyEvts* tree);
-bool sigRate(susyEvts* tree, bool isMC);
+bool sigRate(susyEvts* tree, bool isMC, double treeWeight);
 void initialize();
 void finalize();
 void calDivideErr(const double a, const double da, const double b, const double db, double &s, double &ds);
@@ -203,7 +203,28 @@ int main(int argc, char* argv[])
 		{
 			susyEvts *evts = new susyEvts(tc[j]);
 			cout << "There are " << evts->tree1->GetEntries() << " events" << endl;
-			sigRate(evts, isMC);
+
+			double treeWeight = 1;
+			if (isMC)
+			{ 
+				double sumW = 0;
+				TObjArray* fileList = tc[j]->GetListOfFiles();
+				for(int k=0;k<fileList->GetEntries();k++)
+				{
+					TFile *file = TFile::Open(fileList->At(k)->GetTitle());
+					TH1D *hCutFlow = (TH1D*) file->Get("hCutFlow");
+					sumW += hCutFlow->GetBinContent(2);
+					delete file;
+				}
+                
+				TString f = fileList->At(0)->GetTitle();
+				int sampleID = TString(f(f.Index("TeV")+4,6)).Atoi();
+				double xSecxEff = xsecDB->xsectTimesEff(sampleID);
+				treeWeight = xSecxEff / sumW * LUMI;
+				cout<<"treeWeight: "<<treeWeight<<endl;
+			}
+
+			sigRate(evts, isMC, treeWeight);
 			delete evts;
 		}
 	}
@@ -239,13 +260,8 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC)
 	TChain* tc2 = new TChain( CHAIN_NAME );
 	for (auto f : allFiles)
 	{
-		TRegexp expr  = ".root.?[0-9]?$";
-		TString fname;
 		if (isMC) 
 		{
-			fname  = TString(f(0, f.Index(expr)));
-			fname += "_WEIGHTED.root";
-
 			int sampleID2 = TString(f(f.Index("TeV")+4,6)).Atoi();
 			if(sampleID2 != sampleID1 && sampleID1 != 0)
 			{
@@ -254,29 +270,26 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC)
 			}
 			sampleID1 = sampleID2;
 		}
-		else 
+
+		if (gSystem->AccessPathName(f, kFileExists)) //if file exists, return false 
 		{
-			fname = f;
-		}
-		if (gSystem->AccessPathName(fname, kFileExists)) //if file exists, return false 
-		{
-			cout << ">> File: '" << fname << "' DO NOT exist!" << endl;
+			cout << ">> File: '" << f << "' DO NOT exist!" << endl;
 			continue;
 		}
-		if (tc2->Add(fname))
+		if (tc2->Add(f))
 		{
-			cout << ">> File: '" << fname << "' :: TTree '" << tc2->GetName() << "' has been loaded" << endl;
+			cout << ">> File: '" << f << "' :: TTree '" << tc2->GetName() << "' has been loaded" << endl;
 		}
 		else
 		{
-			cout << ">> File: '" << fname << "' :: TTree '" << tc2->GetName() << "' cannot be loaded" << endl;
+			cout << ">> File: '" << f << "' :: TTree '" << tc2->GetName() << "' cannot be loaded" << endl;
 		}
 	}
 	tc.push_back(tc2);
 	return tc;
 }
 
-bool sigRate(susyEvts* tree, bool isMC)
+bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 {
 	using namespace MCTruthPartClassifier;
 	long nEntries = tree->tree1->GetEntries();
@@ -289,7 +302,7 @@ bool sigRate(susyEvts* tree, bool isMC)
 		double w = 1.0;
 		if (isMC)
 		{
-			w *= ((TChain*)(tree->tree1))->GetTree()->GetWeight();
+			w *= treeWeight;
 			w *= tree->evt.weight;
 			w *= tree->evt.pwt;
 			w *= tree->evt.ElSF;
