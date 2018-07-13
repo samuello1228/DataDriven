@@ -100,7 +100,7 @@ TFile* outFile;
 stringstream monitor;
 
 ///////// methods ///////////
-TChain* loadData(TString fileList, TString prePath, bool isMC);
+std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC);
 bool ptEtaRequirement(double pt, double eta, LEP_TYPE e);
 bool passMuonCR(susyEvts* tree);
 bool passElectronCR(susyEvts* tree);
@@ -196,18 +196,16 @@ int main(int argc, char* argv[])
 		return -1;	
 	}
 
-	susyEvts *evts[N_MAX_FILES];
-
 	for (unsigned int i = 0; i < files.size(); i++)
 	{
-		TChain *tc = loadData(files[i], pre_path, isMC);
-		evts[i] = new susyEvts(tc);
-
-		cout << "In " << files[i] << " control samples, there are " ;
-		cout << evts[i]->tree1->GetEntries() << " events" << endl;
-		monitor << "After " << files[i] << " samples: " << endl;
-		sigRate(evts[i], isMC);
-		delete evts[i];
+		std::vector<TChain*> tc = loadData(files[i], pre_path, isMC);
+		for (unsigned int j = 0; j < tc.size(); j++)
+		{
+			susyEvts *evts = new susyEvts(tc[j]);
+			cout << "There are " << evts->tree1->GetEntries() << " events" << endl;
+			sigRate(evts, isMC);
+			delete evts;
+		}
 	}
 
 
@@ -220,9 +218,9 @@ int main(int argc, char* argv[])
 }
 
 
-TChain* loadData(TString fileList, TString prePath, bool isMC)
+std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC)
 {
-	TChain* tc = new TChain( CHAIN_NAME );
+	std::vector<TChain*> tc;
 
 	ifstream in(fileList.Data());
 	vector<TString> allFiles;
@@ -236,6 +234,9 @@ TChain* loadData(TString fileList, TString prePath, bool isMC)
 	}
 
 	cout << "Loading NTuples from " << fileList << endl;
+
+	int sampleID1 = 0;
+	TChain* tc2 = new TChain( CHAIN_NAME );
 	for (auto f : allFiles)
 	{
 		TRegexp expr  = ".root.?[0-9]?$";
@@ -244,6 +245,14 @@ TChain* loadData(TString fileList, TString prePath, bool isMC)
 		{
 			fname  = TString(f(0, f.Index(expr)));
 			fname += "_WEIGHTED.root";
+
+			int sampleID2 = TString(f(f.Index("TeV")+4,6)).Atoi();
+			if(sampleID2 != sampleID1 && sampleID1 != 0)
+			{
+				tc.push_back(tc2);
+				tc2 = new TChain( CHAIN_NAME );
+			}
+			sampleID1 = sampleID2;
 		}
 		else 
 		{
@@ -254,15 +263,16 @@ TChain* loadData(TString fileList, TString prePath, bool isMC)
 			cout << ">> File: '" << fname << "' DO NOT exist!" << endl;
 			continue;
 		}
-		if (tc->Add(fname))
+		if (tc2->Add(fname))
 		{
-			cout << ">> File: '" << fname << "' :: TTree '" << tc->GetName() << "' has been loaded" << endl;
+			cout << ">> File: '" << fname << "' :: TTree '" << tc2->GetName() << "' has been loaded" << endl;
 		}
 		else
 		{
-			cout << ">> File: '" << fname << "' :: TTree '" << tc->GetName() << "' cannot be loaded" << endl;
+			cout << ">> File: '" << fname << "' :: TTree '" << tc2->GetName() << "' cannot be loaded" << endl;
 		}
 	}
+	tc.push_back(tc2);
 	return tc;
 }
 
