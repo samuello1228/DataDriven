@@ -1,5 +1,4 @@
 user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.407321.MadGraphPythia8EvtGen_A14NNPDF23LO_ttbarWll.14496018._000004.myOutput.root
-user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410080.MadGraphPythia8EvtGen_A14NNPDF23_4topSM.14496018._000006.myOutput.root
 user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410081.MadGraphPythia8EvtGen_A14NNPDF23_ttbarWW.14496018._000002.myOutput.root
 user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410155.aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttW.14496018._000015.myOutput.root
 user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410218.aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttee.14496018._000011.myOutput.root

@@ -1,0 +1,2 @@
+user.clo.v12.1.multitop_fast_myOutput.root/user.clo.mc15_13TeV.304014.MadGraphPythia8EvtGen_A14NNPDF23_3top_SM.14496304._000001.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410080.MadGraphPythia8EvtGen_A14NNPDF23_4topSM.14496018._000006.myOutput.root
