@@ -1,0 +1,10 @@
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410011.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top.14496018._000001.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410011.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top.14496018._000008.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410011.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top.14496018._000018.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410012.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop.14496018._000007.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410012.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop.14496018._000009.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410012.PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop.14496018._000012.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410015.PowhegPythiaEvtGen_P2012_Wt_dilepton_top.14496018._000016.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410016.PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop.14496018._000017.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410025.PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top.14496018._000003.myOutput.root
+user.clo.v12.1.top_myOutput.root/user.clo.mc15_13TeV.410026.PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop.14496018._000005.myOutput.root

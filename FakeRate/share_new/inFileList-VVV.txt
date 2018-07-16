@@ -1,0 +1,5 @@
+user.clo.v12.1.VV_myOutput.root/user.clo.mc15_13TeV.407311.Sherpa_221_NNPDF30NNLO_6l0v_EW6.14496218._000003.myOutput.root
+user.clo.v12.1.VV_myOutput.root/user.clo.mc15_13TeV.407312.Sherpa_221_NNPDF30NNLO_5l1v_EW6.14496218._000017.myOutput.root
+user.clo.v12.1.VV_myOutput.root/user.clo.mc15_13TeV.407313.Sherpa_221_NNPDF30NNLO_4l2v_EW6.14496218._000006.myOutput.root
+user.clo.v12.1.VV_myOutput.root/user.clo.mc15_13TeV.407314.Sherpa_221_NNPDF30NNLO_3l3v_EW6.14496218._000007.myOutput.root
+user.clo.v12.1.VV_myOutput.root/user.clo.mc15_13TeV.407315.Sherpa_221_NNPDF30NNLO_2l4v_EW6.14496218._000002.myOutput.root
