@@ -446,50 +446,56 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 
 bool passMuonCR(susyEvts* tree)
 {
-	bool pass = true;
 	// trigger
-	pass *= tree->sig.trigCode > 0;
+	if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; return false;}
+	
 	// two leptons
-	pass *= tree->leps.size() == 2;
+	if(tree->leps.size() != 2) return false;
+	
 	// SFSS
-	pass *= int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) == 169;
+	if(int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) != 169) return false;
+	
 	// more than one jets
-	pass *= tree->jets.size() > 0;
+	if(tree->jets.size() == 0) return false;
+	
 	// at least one b-jets
 	bool fJet = false;
 	for (unsigned int i = 0; i < tree->jets.size(); i++) 
 	{
 		fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
 	}
-	pass *= fJet;
+	if(!fJet) return false;
 
-	//pass *= (tree->sig.Met + tree->sig.HT) > 200;
+	//if(tree->sig.Met + tree->sig.HT <= 200) return false;
 
-	return pass;
+	return true;
 }
 
 bool passElectronCR(susyEvts* tree)
 {
-	bool pass = true;
 	// trigger
-	pass *= tree->sig.trigCode > 0;
+	if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; return false;}
+	
 	// two leptons
-	pass *= tree->leps.size() == 2;
+	if(tree->leps.size() != 2) return false;
+	
 	// OFSS
-	pass *= int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) == 143;
+	if(int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) != 143) return false;
+	
 	// more than one jets
-	pass *= tree->jets.size() > 0;
+	if(tree->jets.size() == 0) return false;
+	
 	// at least one b-jets
 	bool fJet = false;
 	for (unsigned int i = 0; i < tree->jets.size(); i++) 
 	{
 		fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
 	}
-	pass *= fJet;
+	if(!fJet) return false;
 
-	//pass *= (tree->sig.Met + tree->sig.HT) > 200;
+	//if(tree->sig.Met + tree->sig.HT <= 200) return false;
 
-	return pass;
+	return true;
 }
 
 void calDivideErr(const double a, const double da, const double b, const double db, double &s, double &ds)
