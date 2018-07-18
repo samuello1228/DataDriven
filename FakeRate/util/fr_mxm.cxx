@@ -104,7 +104,7 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC);
 bool ptEtaRequirement(double pt, double eta, LEP_TYPE e);
 bool passMuonCR(susyEvts* tree);
 bool passElectronCR(susyEvts* tree);
-bool sigRate(susyEvts* tree, bool isMC, double treeWeight);
+bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow);
 void initialize();
 void finalize();
 void calDivideErr(const double a, const double da, const double b, const double db, double &s, double &ds);
@@ -198,7 +198,18 @@ int main(int argc, char* argv[])
 		cerr << "<data_type> should be data or mc provided." << endl; 
 		return -1;	
 	}
-
+	
+	//hist for cutflow
+	std::vector<TString> cutflowList;
+	cutflowList.push_back("ntuple");
+	cutflowList.push_back("=2BaseLep");
+	
+	TH1D* hCutflow = new TH1D("cutflow", "cutflow", cutflowList.size(), 0, cutflowList.size());
+	for(unsigned int i=0;i<cutflowList.size();i++)    
+	{
+		hCutflow->GetXaxis()->SetBinLabel(i+1,cutflowList[i].Data());
+	}
+	
 	for (unsigned int i = 0; i < files.size(); i++)
 	{
 		std::vector<TChain*> tc = loadData(files[i], pre_path, isMC);
@@ -227,17 +238,23 @@ int main(int argc, char* argv[])
 				cout<<"treeWeight: "<<treeWeight<<endl;
 			}
 
-			sigRate(evts, isMC, treeWeight);
+			sigRate(evts, isMC, treeWeight, hCutflow);
 			delete evts;
 		}
 	}
-
-
+	
+	//print cutflow
+	for(unsigned int j=1;j<=cutflowList.size();j++)
+	{
+		cout<<hCutflow->GetXaxis()->GetBinLabel(j)<<": ";
+		cout<<int(hCutflow->GetBinContent(j))<<endl;
+	}
+	
 	finalize();
 	outFile->Write();
 	outFile->Close();
 	cout << "Finished !" << endl;
-
+	
 	return 0;
 }
 
@@ -292,21 +309,25 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC)
 	return tc;
 }
 
-bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
+bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 {
 	using namespace MCTruthPartClassifier;
 	long nEntries = tree->tree1->GetEntries();
 	if (gDEBUG) cout << "Begin calculating signal rates" << endl;
+	bool DoCutflow = false;
 	for (long i = 0; i < nEntries; i++)
 	{
 		tree->GetEntry(i); 
+		
+		if(DoCutflow) hCutflow->Fill("ntuple",1);
 		
 		// trigger
 		//For old ntuple
 		//if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; continue;}
 		
-		// two leptons
+		// two baseline leptons
 		if(tree->leps.size() != 2) continue;
+		if(DoCutflow) hCutflow->Fill("=2BaseLep",1);
 		
 		int product = int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000);
 		// SS emu or SS mumu
