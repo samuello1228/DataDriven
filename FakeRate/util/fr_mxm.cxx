@@ -93,6 +93,7 @@ bool gDEBUG      = true;
 STUDY gStudy     = SS;
 TString gPWD     = "$ROOTCOREBIN/..";
 bool gIsDBReady  = false;
+bool DoCutflow = false;
 
 // global variables
 SUSY::CrossSectionDB* xsecDB;
@@ -244,10 +245,13 @@ int main(int argc, char* argv[])
 	}
 	
 	//print cutflow
-	for(unsigned int j=1;j<=cutflowList.size();j++)
+	if(DoCutflow)
 	{
-		cout<<hCutflow->GetXaxis()->GetBinLabel(j)<<": ";
-		cout<<int(hCutflow->GetBinContent(j))<<endl;
+		for(unsigned int j=1;j<=cutflowList.size();j++)
+		{
+			cout<<hCutflow->GetXaxis()->GetBinLabel(j)<<": ";
+			cout<<int(hCutflow->GetBinContent(j))<<endl;
+		}
 	}
 	
 	finalize();
@@ -314,7 +318,6 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 	using namespace MCTruthPartClassifier;
 	long nEntries = tree->tree1->GetEntries();
 	if (gDEBUG) cout << "Begin calculating signal rates" << endl;
-	bool DoCutflow = false;
 	for (long i = 0; i < nEntries; i++)
 	{
 		tree->GetEntry(i); 
@@ -394,7 +397,6 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 					{
 						//do something here to keep prompt-lepton info
 						ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-						ParticleOrigin orig = static_cast<ParticleOrigin>(tree->leps[probe_idx].truthOrig);
 						if (type == IsoElectron)
 						{
 							prompt_el->hLoose->Fill(pt, eta, w);
@@ -443,7 +445,6 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 						if (isMC)
 						{
 							ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-							ParticleOrigin orig = static_cast<ParticleOrigin>(tree->leps[probe_idx].truthOrig);
 							if (type == IsoMuon)
 							{
 								prompt_mu->hLoose->Fill(pt, eta, w);
