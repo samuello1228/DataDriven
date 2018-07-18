@@ -300,8 +300,31 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 	for (long i = 0; i < nEntries; i++)
 	{
 		tree->GetEntry(i); 
-
-
+		
+		// trigger
+		//For old ntuple
+		//if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; continue;}
+		
+		// two leptons
+		if(tree->leps.size() != 2) continue;
+		
+		int product = int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000);
+		// SS emu or SS mumu
+		if(product != 143 && product != 169) continue;
+		
+		// more than one jets
+		if(tree->jets.size() == 0) continue;
+		
+		// at least one b-jets
+		bool fJet = false;
+		for (unsigned int i = 0; i < tree->jets.size(); i++) 
+		{
+			fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
+		}
+		if(!fJet) continue;
+        	
+		//if(tree->sig.Met + tree->sig.HT <= 200) continue;
+		
 		double w = 1.0;
 		if (isMC)
 		{
@@ -315,7 +338,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 			w *= tree->evt.trigSF;
 		}
 		//electron sample	
-		if (passElectronCR(tree))
+		if (product == 143)
 		{ 
 			// muon tag 
 			int tag_idx, probe_idx;
@@ -364,7 +387,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 			}
 		}
 		//muon sample
-		if (passMuonCR(tree))
+		else if (product == 169)
 		{ 
 			// muon tag 
 			for (unsigned int j = 0; j < 2; j++)
@@ -440,60 +463,6 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 	monitor << prompt_mu->hTight->GetName() << "\t";
 	monitor << prompt_mu->hTight->GetEntries() << "\t";
 	monitor << prompt_mu->hTight->GetEffectiveEntries() << endl;
-
-	return true;
-}
-
-bool passMuonCR(susyEvts* tree)
-{
-	// trigger
-	if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; return false;}
-	
-	// two leptons
-	if(tree->leps.size() != 2) return false;
-	
-	// SFSS
-	if(int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) != 169) return false;
-	
-	// more than one jets
-	if(tree->jets.size() == 0) return false;
-	
-	// at least one b-jets
-	bool fJet = false;
-	for (unsigned int i = 0; i < tree->jets.size(); i++) 
-	{
-		fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
-	}
-	if(!fJet) return false;
-
-	//if(tree->sig.Met + tree->sig.HT <= 200) return false;
-
-	return true;
-}
-
-bool passElectronCR(susyEvts* tree)
-{
-	// trigger
-	if(tree->sig.trigCode<=0) {cout<<"Trigger Error!!!!!"<<endl; return false;}
-	
-	// two leptons
-	if(tree->leps.size() != 2) return false;
-	
-	// OFSS
-	if(int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000) != 143) return false;
-	
-	// more than one jets
-	if(tree->jets.size() == 0) return false;
-	
-	// at least one b-jets
-	bool fJet = false;
-	for (unsigned int i = 0; i < tree->jets.size(); i++) 
-	{
-		fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
-	}
-	if(!fJet) return false;
-
-	//if(tree->sig.Met + tree->sig.HT <= 200) return false;
 
 	return true;
 }
