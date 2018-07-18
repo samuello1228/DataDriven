@@ -19,13 +19,30 @@
 #include "AtlasStyle.C"
 
 const double ETA_EL[] = {0, 1.37, 1.52, 2.47};
-const double ETA_MU[] = {0, 1.37, 1.52, 2.5};
-const double PT_EL[]  = {25, 35, 45, 200, 500};
-const double PT_MU[]  = {25, 30, 45, 200, 500};
+const double ETA_MU[] = {0, 1.37, 1.52, 2.4};
+const double PT_EL[]  = {25, 35, 45, 120, 200};
+const double PT_MU[]  = {25, 30, 45, 120, 200};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
 const unsigned int NPT_EL  = sizeof(PT_EL)  / sizeof(PT_EL[0])  - 1;
 const unsigned int NPT_MU  = sizeof(PT_MU)  / sizeof(PT_MU[0])  - 1;
+
+//Peter result
+const double Params_Fake_el_nominal[] = {
+    0.115837, 0.147943, 0.21007, 0.177491, 0.0621802, 0.0566687, 0.137219, 0.126778, 0.13501, 0.0963788, 0.0909373, 0.121558
+};
+
+const double Params_Fake_el_statDOWNdiff[] = {
+    0.0181598, 0.0300393, 0.0274507, 0.0438151, 0.029465, 0.0375158, 0.0326709, 0.0248499, 0.0246109, 0.0257812, 0.0136109, 0.036831
+};
+
+const double Params_Fake_mu_nominal[] = {
+    0.175618, 0.127712, 0.208001, 0.118104, 0.24175, 0.0582174, 0.217779, 0.142331, 0.127783, 0.152324, 0.229239, 0.392727
+};
+
+const double Params_Fake_mu_statDOWNdiff[] = {
+    0.0376544, 0.0361995, 0.0540197, 0.0446926, 0.110971, 0.0637628, 0.275801, 0.027893, 0.0384687, 0.0513694, 0.120531, 0.538107
+};
 
 void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned int NPT,const double PT[],TH2D* hEff)
 {
@@ -121,6 +138,61 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
         delete hLoose_data_pt;
         delete hTight_prompt_mc_pt;
         delete hLoose_prompt_mc_pt;
+    }
+    
+    //output result for latex
+    {
+        double Params_Fake_nominal[NETA*NPT];
+        double Params_Fake_statDOWNdiff[NETA*NPT];
+        if(lepton_type=="El")
+        {
+            for(unsigned int i=0;i<NETA*NPT;i++) Params_Fake_nominal[i] = Params_Fake_el_nominal[i];
+            for(unsigned int i=0;i<NETA*NPT;i++) Params_Fake_statDOWNdiff[i] = Params_Fake_el_statDOWNdiff[i];
+        }
+        else if(lepton_type=="Mu")
+        {
+            for(unsigned int i=0;i<NETA*NPT;i++) Params_Fake_nominal[i] = Params_Fake_mu_nominal[i];
+            for(unsigned int i=0;i<NETA*NPT;i++) Params_Fake_statDOWNdiff[i] = Params_Fake_mu_statDOWNdiff[i];
+        }
+        
+        TString PathName = "fake_";
+        PathName += lepton_type;
+        PathName += ".tex";
+        
+        ofstream fout;
+        fout.open(PathName.Data());
+        
+        fout<<"\\begin{tabular}{|";
+        for(unsigned int i=1;i<=NETA+1;i++) fout<<"c|";
+        fout<<"}"<<endl;
+        fout<<"\\hline"<<endl;
+        
+        for(unsigned int i=1;i<=NETA;i++) fout<<" & $"<<ETA[i-1]<<" < |\\eta| < "<<ETA[i]<<"$";
+        fout<<" \\\\"<<endl;
+        fout<<"\\hline"<<endl;
+        
+        for(unsigned int i=1;i<=NPT;i++)
+        {
+            //For my result
+            fout<<"$"<<PT[i-1]<<" < p_T < "<<PT[i]<<"$";
+            for(unsigned int j=1;j<=NETA;j++)
+            {
+                fout<<" & \\color{orange} $"<<hEff->GetBinContent(i,j)<<" \\pm "<<hEff->GetBinError(i,j)<<"$";
+            }
+            fout<<" \\\\"<<endl;
+            
+            //For Peter result
+            for(unsigned int j=1;j<=NETA;j++)
+            {
+                int index = (j-1) * NPT + (i-1);
+                fout<<" & \\color{blue} $"<<Params_Fake_nominal[index]<<" \\pm "<<Params_Fake_statDOWNdiff[index]<<"$";
+            }
+            fout<<" \\\\"<<endl;
+            fout<<"\\hline"<<endl;
+        }
+        
+        fout<<"\\end{tabular}";
+        fout.close();
     }
     
     //For h2
