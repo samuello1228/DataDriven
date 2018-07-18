@@ -52,9 +52,9 @@ enum LEP_TYPE
 };
 
 const double ETA_EL[] = {0, 1.37, 1.52, 2.47};
-const double ETA_MU[] = {0, 1.37, 1.52, 2.5};
-const double PT_EL[]  = {25, 35, 45, 200, 500};
-const double PT_MU[]  = {25, 30, 45, 200, 500};
+const double ETA_MU[] = {0, 1.37, 1.52, 2.4};
+const double PT_EL[]  = {25, 35, 45, 120, 200};
+const double PT_MU[]  = {25, 30, 45, 120, 200};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
 const unsigned int NPT_EL  = sizeof(PT_EL)  / sizeof(PT_EL[0])  - 1;
@@ -157,8 +157,8 @@ int main(int argc, char* argv[])
 	}
 	initialize();
 
-	TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
-	//TString pre_path  = "";
+	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
+	TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/";
 	TString data_type = TString(argv[1]); 
 	TString output    = gPWD + "/FakeRate/run/output/fr_mxm/" + data_type + "_fr_mxm.root";
 
@@ -171,23 +171,26 @@ int main(int argc, char* argv[])
 	bool isMC;
 	vector<TString> files;
 	files.clear();
+	//TString path = "../share/";
+	TString path = "../share_new/";
 	if (data_type == "data")
 	{
-		//files.push_back("../share/inFileList-data.txt");
-		files.push_back("../share/data.txt");
-		//files.push_back("../share/new_data.txt");
+		files.push_back( path + "data.txt");
 		isMC = false;
 	}
 	else if (data_type == "mc")
 	{
-		files.push_back( "../share/inFileList-ttbar.txt" );
-		files.push_back( "../share/inFileList-DY.txt" );
-		files.push_back( "../share/inFileList-ttV.txt" );
-		files.push_back( "../share/inFileList-ZPowheg.txt" );
-		files.push_back( "../share/inFileList-Wjets.txt" );
-		files.push_back( "../share/inFileList-VV.txt" );
-		files.push_back( "../share/inFileList-Vgamma.txt" );
-		files.push_back( "../share/inFileList-SingleTop.txt" );
+		//files.push_back( path + "inFileList-ttbar.txt" );
+		//files.push_back( path + "inFileList-DY.txt" );
+		//files.push_back( path + "inFileList-ZPowheg.txt" );
+		//files.push_back( path + "inFileList-Wjets.txt" );
+		//files.push_back( path + "inFileList-Vgamma.txt" );
+		//files.push_back( path + "inFileList-SingleTop.txt" );
+		files.push_back( path + "inFileList-higgs.txt" );
+		files.push_back( path + "inFileList-VV.txt" );
+		files.push_back( path + "inFileList-VVV.txt" );
+		files.push_back( path + "inFileList-ttV.txt" );
+		files.push_back( path + "inFileList-multitop.txt" );
 		isMC = true;
 	}
 	else 
@@ -307,13 +310,16 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight)
 			w *= tree->evt.pwt;
 			w *= tree->evt.ElSF;
 			w *= tree->evt.MuSF;
+			w *= tree->evt.BtagSF;
+			w *= tree->evt.JvtSF;
+			w *= tree->evt.trigSF;
 		}
 		//electron sample	
 		if (passElectronCR(tree))
 		{ 
 			// muon tag 
 			int tag_idx, probe_idx;
-			int id = int(tree->leps[0].ID)/1000;
+			int id = int(tree->leps[0].ID/1000);
 			if (abs(id) == 13)
 			{
 				tag_idx   = 0;
