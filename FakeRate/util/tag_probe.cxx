@@ -82,6 +82,21 @@ struct Histo
 	{
 		hEff->Add(hTight); 
 		hEff->Divide(hLoose); 
+		
+		unsigned int NETA;
+		if (_e == LEP_TYPE::ELEC) NETA = NETA_EL;
+		else NETA = NETA_MU;
+		
+		cout<<"result for real eff:"<<endl;
+		for(unsigned int i=1;i<=NPT+1;i++)
+		{
+			for(unsigned int j=1;j<=NETA;j++)
+			{
+				cout<<hEff->GetBinContent(i,j)<<", "<<hEff->GetBinError(i,j)<<endl;
+			}
+			cout<<endl;
+		}
+		
 	}
 	TH2D *hLoose;
 	TH2D *hTight;
