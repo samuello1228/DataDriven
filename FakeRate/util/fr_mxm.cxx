@@ -187,9 +187,9 @@ int main(int argc, char* argv[])
 		//files.push_back( path + "inFileList-Wjets.txt" );
 		//files.push_back( path + "inFileList-Vgamma.txt" );
 		//files.push_back( path + "inFileList-SingleTop.txt" );
-		files.push_back( path + "inFileList-higgs.txt" );
-		files.push_back( path + "inFileList-VV.txt" );
-		files.push_back( path + "inFileList-VVV.txt" );
+		files.push_back( path + "inFileList-higgs-Peter.txt" );
+		files.push_back( path + "inFileList-VV-Peter.txt" );
+		files.push_back( path + "inFileList-VVV-Peter.txt" );
 		files.push_back( path + "inFileList-ttV.txt" );
 		files.push_back( path + "inFileList-multitop.txt" );
 		isMC = true;
