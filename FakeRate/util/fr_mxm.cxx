@@ -379,25 +379,25 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			}
 			if(tree->leps[tag_idx].pt <= 40) continue;
 			if(!(tree->leps[tag_idx].lFlag & IS_SIGNAL)) continue;
+			
 			//tag assigned
+			double pt  = tree->leps[probe_idx].pt;
+			double eta = fabs(tree->leps[probe_idx].eta); 
+			if(!ptEtaRequirement(pt, eta, LEP_TYPE::ELEC)) continue;
+			
+			//probe
+			bool isTight = tree->leps[probe_idx].lFlag & IS_SIGNAL;
+			real_el->hLoose->Fill(pt, eta, w);
+			if (isTight) real_el->hTight->Fill(pt, eta, w);
+			
+			//do something here to keep prompt-lepton info
+			if (isMC)
 			{
-				double pt  = tree->leps[probe_idx].pt;
-				double eta = fabs(tree->leps[probe_idx].eta); 
-				if(!ptEtaRequirement(pt, eta, LEP_TYPE::ELEC)) continue;
+				ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
+				if (type == IsoElectron)
 				{
-					bool isTight = tree->leps[probe_idx].lFlag & IS_SIGNAL;
-					real_el->hLoose->Fill(pt, eta, w);
-					if (isTight) real_el->hTight->Fill(pt, eta, w);
-					if (isMC)
-					{
-						//do something here to keep prompt-lepton info
-						ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-						if (type == IsoElectron)
-						{
-							prompt_el->hLoose->Fill(pt, eta, w);
-							if (isTight) prompt_el->hTight->Fill(pt, eta, w);
-						}
-					}
+					prompt_el->hLoose->Fill(pt, eta, w);
+					if (isTight) prompt_el->hTight->Fill(pt, eta, w);
 				}
 			}
 		}
@@ -420,24 +420,25 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 				}
 				if(tree->leps[tag_idx].pt <= 40) continue;
 				if(!(tree->leps[tag_idx].lFlag & IS_SIGNAL)) continue;
+				
 				//tag assigned
+				double pt  = tree->leps[probe_idx].pt;
+				double eta = fabs(tree->leps[probe_idx].eta); 
+				if(!ptEtaRequirement(pt, eta, LEP_TYPE::MUON)) continue;
+				
+				//probe
+				bool isTight = tree->leps[probe_idx].lFlag & IS_SIGNAL;
+				real_mu->hLoose->Fill(pt, eta, w);
+				if (isTight) real_mu->hTight->Fill(pt, eta, w);
+				
+				//do something here to keep prompt-lepton info
+				if (isMC)
 				{
-					double pt  = tree->leps[probe_idx].pt;
-					double eta = fabs(tree->leps[probe_idx].eta); 
-					if(!ptEtaRequirement(pt, eta, LEP_TYPE::MUON)) continue;
+					ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
+					if (type == IsoMuon)
 					{
-						bool isTight = tree->leps[probe_idx].lFlag & IS_SIGNAL;
-						real_mu->hLoose->Fill(pt, eta, w);
-						if (isTight) real_mu->hTight->Fill(pt, eta, w);
-						if (isMC)
-						{
-							ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-							if (type == IsoMuon)
-							{
-								prompt_mu->hLoose->Fill(pt, eta, w);
-								if (isTight) prompt_mu->hTight->Fill(pt, eta, w);
-							}
-						}
+						prompt_mu->hLoose->Fill(pt, eta, w);
+						if (isTight) prompt_mu->hTight->Fill(pt, eta, w);
 					}
 				}
 			}
