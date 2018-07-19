@@ -72,6 +72,13 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
         hEff->Divide(hTemp);
         
         delete hTemp;
+        
+        //fill for pt overflow
+        for(unsigned int j=1;j<=NETA;j++)
+        {
+            hEff->SetBinContent(NPT+1,j,hEff->GetBinContent(NPT,j));
+            hEff->SetBinError(NPT+1,j,hEff->GetBinError(NPT,j));
+        }
     }
     
     //hEff_eta
