@@ -204,6 +204,13 @@ int main(int argc, char* argv[])
 	std::vector<TString> cutflowList;
 	cutflowList.push_back("ntuple");
 	cutflowList.push_back("=2BaseLep");
+	cutflowList.push_back("SS");
+	cutflowList.push_back("emu");
+	cutflowList.push_back("mumu");
+	cutflowList.push_back("jet_emu");
+	cutflowList.push_back("jet_mumu");
+	cutflowList.push_back("bjet_emu");
+	cutflowList.push_back("bjet_mumu");
 	
 	TH1D* hCutflow = new TH1D("cutflow", "cutflow", cutflowList.size(), 0, cutflowList.size());
 	for(unsigned int i=0;i<cutflowList.size();i++)    
@@ -333,11 +340,26 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 		if(DoCutflow) hCutflow->Fill("=2BaseLep",1);
 		
 		int product = int(tree->leps[0].ID/1000) * int(tree->leps[1].ID/1000);
+		if(DoCutflow)
+		{
+			if(product<0) continue; 
+			hCutflow->Fill("SS",1);
+
+			if(product == 143) hCutflow->Fill("emu",1);
+			else if(product == 169) hCutflow->Fill("mumu",1);
+			else continue; 
+		}
+
 		// SS emu or SS mumu
 		if(product != 143 && product != 169) continue;
 		
 		// more than one jets
 		if(tree->jets.size() == 0) continue;
+		if(DoCutflow)
+		{
+			if(product == 143) hCutflow->Fill("jet_emu",1);
+			else if(product == 169) hCutflow->Fill("jet_mumu",1);
+		}
 		
 		// at least one b-jets
 		bool fJet = false;
@@ -346,6 +368,11 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
 		}
 		if(!fJet) continue;
+		if(DoCutflow)
+		{
+			if(product == 143) hCutflow->Fill("bjet_emu",1);
+			else if(product == 169) hCutflow->Fill("bjet_mumu",1);
+		}
         	
 		//if(tree->sig.Met + tree->sig.HT <= 200) continue;
 		
