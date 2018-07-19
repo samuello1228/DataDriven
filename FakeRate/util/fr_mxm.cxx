@@ -545,37 +545,16 @@ char* itoa(int num, char* str,int radix)
 
 bool ptEtaRequirement(double pt, double eta, LEP_TYPE e)
 {
-
 	if (e == LEP_TYPE::ELEC)
 	{
-		if (pt < PT_EL[0] || pt > PT_EL[NPT_EL])
-		{
-			return false;
-		}
-		
-		if (fabs(eta) < ETA_EL[0] || fabs(eta) > ETA_EL[NETA_EL])
-		{
-			return false;
-		}
-		else 
-		{
-			return true;
-		}
+		if (pt < PT_EL[0] || pt > PT_EL[NPT_EL]) return false;
+		if (eta < ETA_EL[0] || eta > ETA_EL[NETA_EL]) return false;
+		return true;
 	}
 	else 
 	{
-		if (pt < PT_MU[0] || pt > PT_MU[NPT_MU])
-		{
-			return false;
-		}
-		
-		if (fabs(eta) < ETA_MU[0] || fabs(eta) > ETA_MU[NETA_MU])
-		{
-			return false;
-		}
-		else 
-		{
-			return true;
-		}
+		if (pt < PT_MU[0] || pt > PT_MU[NPT_MU]) return false;
+		if (eta < ETA_MU[0] || eta > ETA_MU[NETA_MU]) return false;
+		return true;
 	}
 }
