@@ -1,47 +1,21 @@
 // C++
 #include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <cmath>
-#include <vector>
-#include <cstdlib>
+using namespace std;
 // ROOT
-#include "TSystem.h"
 #include "TChain.h"
 #include "TString.h"
-#include "TROOT.h"
 #include "TFile.h"
-#include "TTree.h"
-#include "TLorentzVector.h"
-#include "TCanvas.h"
-#include "TSystem.h"
-#include "TH1D.h"
-#include "TRegexp.h"
 #include "TH2D.h"
-#include "TDirectory.h"
-// ATLAS
-#include "SUSYTools/SUSYCrossSection.h"
-#include "MCTruthClassifier/MCTruthClassifierDefs.h"
 // My packages
 #include "FakeRate/susyEvts.h"
-
-using namespace std;
-
-// constants
-const TString CHAIN_NAME = "evt2l";
-
-enum LEP_TYPE 
-{
-	ELEC,
-	MUON,
-};
 
 bool ptEtaRequirement(double pt, double eta, int ID);
 double getEff(double pt,double eta,int ID,TH2D* heEff,TH2D* huEff);
 
 int main()
 {
+	const TString CHAIN_NAME = "evt2l";
+	
 	//read old tree
 	TString path = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/user.clo.v12.1.data_myOutput.root/";
 	path += "*.root*";
@@ -165,6 +139,8 @@ int main()
 	delete tree1;
 	delete evt2;
 	delete output;
+	delete file_real;
+	delete file_fake;
 }
 
 bool ptEtaRequirement(double pt, double eta, int ID)
