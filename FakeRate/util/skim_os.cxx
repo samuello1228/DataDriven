@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
 	outTree->Branch("meff",     &g_meff,     "meff/D");
 	outTree->Branch("met",      &g_met,      "met/D");
 	outTree->Branch("mlj",      &g_mlj,      "mlj/D");
-	outTree->Branch("met_rel",  &g_met_rel,  "met_rel/D");
+	//outTree->Branch("met_rel",  &g_met_rel,  "met_rel/D");
 
 	outTree->Branch("source",   &g_source,   "source/I");
 	outTree->Branch("charge1",  &g_charge1,  "charge1/I");
@@ -277,14 +277,14 @@ bool sigRate(susyEvts* tree, bool isMC)
 			g_detall = fabs(g_eta1 - g_eta2);
 			g_mttwo = tree->sig.mT2;
 			g_met = tree->sig.Met;
-			g_met_rel = tree->sig.MetRel;
+			//g_met_rel = tree->sig.MetRel;
 			g_mlj = tree->sig.mlj;
 			g_pid1 = (int)tree->leps[0].ID/1000;
 			g_pid2 = (int)tree->leps[1].ID/1000;
 			g_meff = tree->sig.HT + tree->sig.Met; 
 
-			double mt1 = sqrt(2*g_pt1*g_met*(1-cos(tree->leps[0].MET_dPhi)));
-			double mt2 = sqrt(2*g_pt2*g_met*(1-cos(tree->leps[1].MET_dPhi)));
+			double mt1 = tree->leps[0].mT;
+			double mt2 = tree->leps[1].mT;
 			g_mt1 = mt1;
 			g_mt2 = mt2;
 			if (g_pt1 > g_pt2)
@@ -357,7 +357,7 @@ bool passPreSelection(susyEvts* tree)
 	bool pass = true;
 	// trigger
 	//pass *= tree->sig.trigCode > 0;
-	pass *= ( tree->sig.trigCode & tree->sig.trigMask ) != 0;
+	//pass *= ( tree->sig.trigCode & tree->sig.trigMask ) != 0;
 	// two leptons
 	pass *= tree->leps.size() == 2;
 	// same sign
