@@ -1,0 +1,5 @@
+user.clo.v13.4.higgs_HerwigppEvtGen_myOutput.root/user.clo.mc15_13TeV.341177.aMcAtNloHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_ttH125_dil.15496775._000003.myOutput.root
+user.clo.v13.4.higgs_HerwigppEvtGen_myOutput.root/user.clo.mc15_13TeV.341270.aMcAtNloHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_ttH125_semilep.15496775._000001.myOutput.root
+user.clo.v13.4.higgs_HerwigppEvtGen_myOutput.root/user.clo.mc15_13TeV.341271.aMcAtNloHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_ttH125_allhad.15496775._000002.myOutput.root
+user.clo.v13.4.higgs_Pythia8EvtGen_myOutput.root/user.clo.mc15_13TeV.342284.Pythia8EvtGen_A14NNPDF23LO_WH125_inc.15496713._000002.myOutput.root
+user.clo.v13.4.higgs_Pythia8EvtGen_myOutput.root/user.clo.mc15_13TeV.342285.Pythia8EvtGen_A14NNPDF23LO_ZH125_inc.15496713._000001.myOutput.root

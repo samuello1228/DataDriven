@@ -1,0 +1,12 @@
+user.clo.v13.4.VV_221_myOutput.root/user.clo.mc15_13TeV.363490.Sherpa_221_NNPDF30NNLO_llll.15496872._000001.myOutput.root
+user.clo.v13.4.VV_221_myOutput.root/user.clo.mc15_13TeV.363490.Sherpa_221_NNPDF30NNLO_llll.15496872._000002.myOutput.root
+user.clo.v13.4.VV_221_myOutput.root/user.clo.mc15_13TeV.363490.Sherpa_221_NNPDF30NNLO_llll.15496872._000004.myOutput.root
+user.clo.v13.4.VV_221_myOutput.root/user.clo.mc15_13TeV.363491.Sherpa_221_NNPDF30NNLO_lllv.15496872._000003.myOutput.root
+user.clo.v13.4.VV_221_myOutput.root/user.clo.mc15_13TeV.363491.Sherpa_221_NNPDF30NNLO_lllv.15496872._000005.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361069.Sherpa_CT10_llvvjj_ss_EW4.15496825._000001.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361070.Sherpa_CT10_llvvjj_ss_EW6.15496825._000007.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361071.Sherpa_CT10_lllvjj_EW6.15496825._000006.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361072.Sherpa_CT10_lllljj_EW6.15496825._000002.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361072.Sherpa_CT10_lllljj_EW6.15496825._000005.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361073.Sherpa_CT10_ggllll.15496825._000003.myOutput.root
+user.clo.v13.4.VV_CT10_myOutput.root/user.clo.mc15_13TeV.361073.Sherpa_CT10_ggllll.15496825._000004.myOutput.root

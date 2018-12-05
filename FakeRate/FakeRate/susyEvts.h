@@ -4,7 +4,8 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TEntryList.h"
-#include "obj_def.h"
+//#include "obj_def_4171b36f.h"
+#include "obj_def_6fc00add.h"
 #include <string>
 
 class susyEvts

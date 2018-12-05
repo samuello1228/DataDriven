@@ -159,7 +159,9 @@ int main(int argc, char* argv[])
 	initialize();
 
 	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
-	TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/";
+	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/";
+	//TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-39-4171b36f/";
+	TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6fc00add/";
 	TString data_type = TString(argv[1]); 
 	TString output    = gPWD + "/FakeRate/run/output/fr_mxm/" + data_type + "_fr_mxm.root";
 
@@ -173,7 +175,8 @@ int main(int argc, char* argv[])
 	vector<TString> files;
 	files.clear();
 	//TString path = "../share/";
-	TString path = "../share_new/";
+	//TString path = "../share_new/";
+	TString path = "../share_6fc00add/";
 	if (data_type == "data")
 	{
 		files.push_back( path + "data.txt");
@@ -354,7 +357,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 		if(product != 143 && product != 169) continue;
 		
 		// more than one jets
-		if(tree->jets.size() == 0) continue;
+		if(tree->sig.nJet == 0) continue;
 		if(DoCutflow)
 		{
 			if(product == 143) hCutflow->Fill("jet_emu",1);
@@ -362,12 +365,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 		}
 		
 		// at least one b-jets
-		bool fJet = false;
-		for (unsigned int i = 0; i < tree->jets.size(); i++) 
-		{
-			fJet = fJet || (tree->jets[i].jFlag & JT_BJET);
-		}
-		if(!fJet) continue;
+		if(tree->sig.nBJet == 0) continue;
 		if(DoCutflow)
 		{
 			if(product == 143) hCutflow->Fill("bjet_emu",1);
