@@ -22,7 +22,6 @@
 #include "TDirectory.h"
 // ATLAS
 #include "SUSYTools/SUSYCrossSection.h"
-#include "MCTruthClassifier/MCTruthClassifierDefs.h"
 // My packages
 #include "FakeRate/susyEvts.h"
 
@@ -325,7 +324,6 @@ std::vector<TChain*> loadData(TString fileList, TString prePath, bool isMC)
 
 bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 {
-	using namespace MCTruthPartClassifier;
 	long nEntries = tree->tree1->GetEntries();
 	if (gDEBUG) cout << "Begin calculating signal rates" << endl;
 	for (long i = 0; i < nEntries; i++)
@@ -384,8 +382,10 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			w *= tree->evt.MuSF;
 			w *= tree->evt.BtagSF;
 			w *= tree->evt.JvtSF;
-			w *= tree->evt.trigSF;
+			w *= tree->evt.trigSF_BL;
 		}
+
+		bool LeadIsTag = false;
 		//electron sample	
 		if (product == 143)
 		{ 
@@ -404,6 +404,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			}
 			if(tree->leps[tag_idx].pt <= 40) continue;
 			if(!(tree->leps[tag_idx].lFlag & IS_SIGNAL)) continue;
+			if(!(tree->leps[tag_idx].lFlag & TRIGGER_MATCHED)) continue;
 			
 			//tag assigned
 			double pt  = tree->leps[probe_idx].pt;
@@ -418,8 +419,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			//do something here to keep prompt-lepton info
 			if (isMC)
 			{
-				ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-				if (type == IsoElectron)
+				if (tree->leps[probe_idx].lepTruth == 1)
 				{
 					prompt_el->hLoose->Fill(pt, eta, w);
 					if (isTight) prompt_el->hTight->Fill(pt, eta, w);
@@ -432,6 +432,8 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			// muon tag 
 			for (unsigned int j = 0; j < 2; j++)
 			{
+				if(j == 1 && LeadIsTag) continue;
+
 				int tag_idx, probe_idx;
 				if (j == 0)
 				{
@@ -445,6 +447,8 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 				}
 				if(tree->leps[tag_idx].pt <= 40) continue;
 				if(!(tree->leps[tag_idx].lFlag & IS_SIGNAL)) continue;
+				if(!(tree->leps[tag_idx].lFlag & TRIGGER_MATCHED)) continue;
+				if(j == 0) LeadIsTag = true;
 				
 				//tag assigned
 				double pt  = tree->leps[probe_idx].pt;
@@ -459,8 +463,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 				//do something here to keep prompt-lepton info
 				if (isMC)
 				{
-					ParticleType   type = static_cast<ParticleType>(tree->leps[probe_idx].truthType);
-					if (type == IsoMuon)
+					if (tree->leps[probe_idx].lepTruth == 1)
 					{
 						prompt_mu->hLoose->Fill(pt, eta, w);
 						if (isTight) prompt_mu->hTight->Fill(pt, eta, w);
