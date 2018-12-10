@@ -54,6 +54,32 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
     TH2D *hTight_prompt_mc = (TH2D*) mc->Get(lepton_type+"_prompt_hTight");
     TH2D *hLoose_prompt_mc = (TH2D*) mc->Get(lepton_type+"_prompt_hLoose");
     
+    for(unsigned int i=1;i<=NPT;i++)
+    {
+        cout<<"For "<<PT[i-1]<<" < pt < "<<PT[i]<<" :"<<endl;
+        for(unsigned int j=1;j<=NETA;j++)
+        {
+            cout<<"For "<<ETA[j-1]<<" < |eta| < "<<ETA[j]<<" : "<<endl;
+            
+            cout<<"N^{data}_{signal}: "<<hTight_data->GetBinContent(i,j)<<" +/- "<<hTight_data->GetBinError(i,j)<<endl;
+            cout<<"N^{prompt bkg}_{signal}: "<<hTight_prompt_mc->GetBinContent(i,j)<<" +/- "<<hTight_prompt_mc->GetBinError(i,j)<<endl;
+            cout<<"N^{data}_{baseline}: "<<hLoose_data->GetBinContent(i,j)<<" +/- "<<hLoose_data->GetBinError(i,j)<<endl;
+            cout<<"N^{prompt bkg}_{baseline}: "<<hLoose_prompt_mc->GetBinContent(i,j)<<" +/- "<<hLoose_prompt_mc->GetBinError(i,j)<<endl;
+            
+            double n = hTight_data->GetBinContent(i,j) - hTight_prompt_mc->GetBinContent(i,j);
+            double ne = sqrt(hTight_data->GetBinError(i,j) * hTight_data->GetBinError(i,j)
+                           + hTight_prompt_mc->GetBinError(i,j) * hTight_prompt_mc->GetBinError(i,j));
+            double d = hLoose_data->GetBinContent(i,j) - hLoose_prompt_mc->GetBinContent(i,j);
+            double de = sqrt(hLoose_data->GetBinError(i,j) * hLoose_data->GetBinError(i,j)
+                           + hLoose_prompt_mc->GetBinError(i,j) * hLoose_prompt_mc->GetBinError(i,j));
+            
+            double eff = n/d;
+            double effe = eff * sqrt( (ne/n)*(ne/n) + (de/d)*(de/d) );
+            cout<<eff<<" +/- "<<effe<<endl;
+        }
+        cout<<endl;
+    }
+    
     //For hEff
     {
         //hEff = numerator = hTight_data - hTight_prompt_mc
