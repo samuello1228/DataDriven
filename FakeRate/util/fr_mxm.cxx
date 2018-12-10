@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
 	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/";
 	//TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-39-4171b36f/";
-	TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6fc00add/";
+	TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6fc00add/user.clo.v13.4.";
 	TString data_type = TString(argv[1]); 
 	TString output    = gPWD + "/FakeRate/run/output/fr_mxm/" + data_type + "_fr_mxm.root";
 
@@ -171,30 +171,54 @@ int main(int argc, char* argv[])
 	prompt_mu = new Histo("Mu_prompt", LEP_TYPE::MUON);
 
 	bool isMC;
-	vector<TString> files;
-	files.clear();
-	//TString path = "../share/";
-	//TString path = "../share_new/";
-	TString path = "../share_6fc00add/";
+	vector<TString> sampleID;
 	if (data_type == "data")
 	{
-		files.push_back( path + "data.txt");
 		isMC = false;
+		sampleID.push_back("data_myOutput.root/user.clo.data*");
 	}
 	else if (data_type == "mc")
 	{
-		//files.push_back( path + "inFileList-ttbar.txt" );
-		//files.push_back( path + "inFileList-DY.txt" );
-		//files.push_back( path + "inFileList-ZPowheg.txt" );
-		//files.push_back( path + "inFileList-Wjets.txt" );
-		//files.push_back( path + "inFileList-Vgamma.txt" );
-		//files.push_back( path + "inFileList-SingleTop.txt" );
-		files.push_back( path + "inFileList-higgs-Peter.txt" );
-		files.push_back( path + "inFileList-VV-Peter.txt" );
-		files.push_back( path + "inFileList-VVV-Peter.txt" );
-		files.push_back( path + "inFileList-ttV.txt" );
-		files.push_back( path + "inFileList-multitop.txt" );
 		isMC = true;
+		TString path;
+
+		//VV_CT10
+		path = "VV_CT10"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "361069"; sampleID.push_back(path);
+		path = "VV_CT10"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "361070"; sampleID.push_back(path);
+		path = "VV_CT10"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "361071"; sampleID.push_back(path);
+		path = "VV_CT10"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "361072"; sampleID.push_back(path);
+		path = "VV_CT10"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "361073"; sampleID.push_back(path);
+
+		//VV_221
+		path = "VV_221"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "363490"; sampleID.push_back(path);
+		path = "VV_221"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "363491"; sampleID.push_back(path);
+
+		//VVV
+		path = "VVV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "407311"; sampleID.push_back(path);
+		path = "VVV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "407312"; sampleID.push_back(path);
+		path = "VVV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "407313"; sampleID.push_back(path);
+		path = "VVV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "407314"; sampleID.push_back(path);
+
+		//higgs_Pythia8EvtGen
+		path = "higgs_Pythia8EvtGen"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "342284"; sampleID.push_back(path);
+		path = "higgs_Pythia8EvtGen"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "342285"; sampleID.push_back(path);
+
+		//higgs_HerwigppEvtGen
+		path = "higgs_HerwigppEvtGen"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "341177"; sampleID.push_back(path);
+		path = "higgs_HerwigppEvtGen"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "341270"; sampleID.push_back(path);
+		path = "higgs_HerwigppEvtGen"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "341271"; sampleID.push_back(path);
+
+		//multitop
+		path = "multitop_fast"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "304014"; sampleID.push_back(path);
+		path = "multitop";      path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410080"; sampleID.push_back(path);
+
+		//ttV
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "407321"; sampleID.push_back(path);
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410081"; sampleID.push_back(path);
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410155"; sampleID.push_back(path);
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410218"; sampleID.push_back(path);
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410219"; sampleID.push_back(path);
+		path = "ttV"; path += "_myOutput.root/user.clo.mc15_13TeV."; path += "410220"; sampleID.push_back(path);
 	}
 	else 
 	{
@@ -220,19 +244,21 @@ int main(int argc, char* argv[])
 		hCutflow->GetXaxis()->SetBinLabel(i+1,cutflowList[i].Data());
 	}
 	
-	for (unsigned int i = 0; i < files.size(); i++)
+	for (unsigned int i = 0; i < sampleID.size(); i++)
 	{
-		std::vector<TChain*> tc = loadData(files[i], pre_path, isMC);
-		for (unsigned int j = 0; j < tc.size(); j++)
 		{
-			susyEvts *evts = new susyEvts(tc[j]);
+			TString path = pre_path + sampleID[i] + ".*.myOutput.root*";
+			cout<<path<<endl;
+			TChain* tc = new TChain( CHAIN_NAME );
+			tc->Add(path);
+			susyEvts *evts = new susyEvts(tc);
 			cout << "There are " << evts->tree1->GetEntries() << " events" << endl;
 
 			double treeWeight = 1;
 			if (isMC)
 			{ 
 				double sumW = 0;
-				TObjArray* fileList = tc[j]->GetListOfFiles();
+				TObjArray* fileList = tc->GetListOfFiles();
 				for(int k=0;k<fileList->GetEntries();k++)
 				{
 					TFile *file = TFile::Open(fileList->At(k)->GetTitle());
@@ -385,7 +411,6 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 			w *= tree->evt.trigSF_BL;
 		}
 
-		bool LeadIsTag = false;
 		//electron sample	
 		if (product == 143)
 		{ 
@@ -430,6 +455,7 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 		else if (product == 169)
 		{ 
 			// muon tag 
+			bool LeadIsTag = false;
 			for (unsigned int j = 0; j < 2; j++)
 			{
 				if(j == 1 && LeadIsTag) continue;
