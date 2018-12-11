@@ -17,7 +17,8 @@ int main()
 	const TString CHAIN_NAME = "evt2l";
 	
 	//read old tree
-	TString path = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/user.clo.v12.1.data_myOutput.root/";
+	//TString path = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/user.clo.v12.1.data_myOutput.root/";
+	TString path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6ecc6eb7/user.clo.v13.5.data_myOutput.root/";
 	path += "*.root*";
 	TChain* tree1 = new TChain(CHAIN_NAME);
 	tree1->Add(path.Data());

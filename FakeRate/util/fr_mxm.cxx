@@ -161,6 +161,8 @@ int main(int argc, char* argv[])
 	//TString pre_path  = "/srv/SUSY/ntuple/AnalysisBase-02-04-39-4171b36f/";
 	//TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-39-4171b36f/";
 	TString pre_path  = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6fc00add/user.clo.v13.4.";
+	//TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6ecc6eb7/user.clo.v13.5.";
+
 	TString data_type = TString(argv[1]); 
 	TString output    = gPWD + "/FakeRate/run/output/fr_mxm/" + data_type + "_fr_mxm.root";
 
