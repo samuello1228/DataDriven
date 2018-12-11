@@ -50,9 +50,9 @@ enum LEP_TYPE
 	MUON,
 };
 
-const double ETA_EL[] = {0, 0.8, 1.37, 1.52, 2.01, 2.47};
-const double ETA_MU[] = {0, 0.6, 1.2, 1.8, 2.5};
-const double PT[]  = {20, 30, 40, 50, 60, 70, 80, 90, 100, 200};
+const double ETA_EL[] = {0, 0.8, 1.37, 1.52, 2.47};
+const double ETA_MU[] = {0, 0.6, 1.2, 1.8, 2.4};
+const double PT[]  = {25, 35, 45, 55, 65, 75, 85, 95, 7000};
 const unsigned int NETA_EL = sizeof(ETA_EL) / sizeof(ETA_EL[0]) - 1;
 const unsigned int NETA_MU = sizeof(ETA_MU) / sizeof(ETA_MU[0]) - 1;
 const unsigned int NPT     = sizeof(PT)  / sizeof(PT[0]) - 1;
@@ -183,32 +183,18 @@ int main()
 {
 	initialize();
 
-	TString pre_path = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
-	//TString pre_path = "";
+	//TString pre_path = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
+	TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-fake/";
+	TString files = "../share/data.txt";
+	TChain *tc = loadData(files, pre_path);
 
-	vector<TString> files;
-	files.clear();
-	//files.push_back("../share/new_data.txt");
-	files.push_back("../share/data.txt");
-	//files.push_back("../share/inFileList-data.txt");
-	//files.push_back("../share/test-data.txt");
+	//TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6ecc6eb7/user.clo.v13.5.";
+	TString path = pre_path + "data_myOutput.root/user.clo.data*.*.myOutput.root*";
 
-
-	susyEvts *evts[8];
-
-	for (unsigned int i = 0; i < files.size(); i++)
-	{
-		TChain *tc = loadData(files[i], pre_path);
-		evts[i] = new susyEvts(tc);
-
-		cout << "In " << files[i] << " control samples, there are " ;
-		cout << evts[i]->tree1->GetEntries() << " events" << endl;
-
-		sigRate(evts[i]);
-		delete evts[i];
-	}
-
-
+	susyEvts *evts = new susyEvts(tc);
+	cout << "There are " << evts->tree1->GetEntries() << " events" << endl;
+	sigRate(evts);
+	delete evts;
 
 	finalize();
 
