@@ -183,13 +183,17 @@ int main()
 {
 	initialize();
 
+	/*
 	//TString pre_path = "/srv/SUSY/ntuple/AnalysisBase-02-04-31/";
 	TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-fake/";
 	TString files = "../share/data.txt";
 	TChain *tc = loadData(files, pre_path);
+	*/
 
-	//TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6ecc6eb7/user.clo.v13.5.";
+	TString pre_path = "/eos/user/c/clo/ntuple/AnalysisBase-02-04-31-6ecc6eb7/user.clo.v13.5.";
 	TString path = pre_path + "data_myOutput.root/user.clo.data*.*.myOutput.root*";
+	TChain *tc = new TChain( CHAIN_NAME );
+	tc->Add(path);
 
 	susyEvts *evts = new susyEvts(tc);
 	cout << "There are " << evts->tree1->GetEntries() << " events" << endl;
