@@ -82,7 +82,12 @@ void Draw(TString treeName,unsigned int NETA)
     h2[3]->Draw("same");
     h2[4]->Draw("same");
     
-    ATLASLabel(0.2,0.88,"Internal");
+    {
+        ATLASLabel(0.2,0.88,"Work in progress");
+        TLatex lt2;
+        TString NameTemp = "#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}";
+        lt2.DrawLatexNDC(0.2,0.83, NameTemp.Data());
+    }
     
     Double_t xl1, yl1, xl2, yl2;
     xl2=0.85;
