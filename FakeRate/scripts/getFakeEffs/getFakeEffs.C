@@ -265,7 +265,9 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
     h2[3]->SetMarkerColor(kGreen);
     
     h2[1]->GetXaxis()->SetTitle("p_{T} [GeV]");
-    h2[1]->GetYaxis()->SetRangeUser(-1,2);
+    
+    if(lepton_type=="El") h2[1]->GetYaxis()->SetRangeUser(0,0.5);
+    else if(lepton_type=="Mu") h2[1]->GetYaxis()->SetRangeUser(0,1);
     
     if(lepton_type=="El") h2[1]->GetYaxis()->SetTitle("Electron Fake Efficiency");
     else if(lepton_type=="Mu") h2[1]->GetYaxis()->SetTitle("Muon Fake Efficiency");
@@ -280,11 +282,16 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
         h2[j]->Draw("same");
     }
     
-    ATLASLabel(0.2,0.88,"Internal");
+    {
+        ATLASLabel(0.2,0.88,"Work in progress");
+        TLatex lt2;
+        TString NameTemp = "#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}";
+        lt2.DrawLatexNDC(0.2,0.83, NameTemp.Data());
+    }
     
     Double_t xl1, yl1, xl2, yl2;
-    xl2=0.85;
-    yl2=0.85;
+    xl2=0.4;
+    yl2=0.83;
     xl1=xl2-0.2;
     yl1=yl2-0.2;
     
@@ -325,10 +332,10 @@ void GetEffs(TString lepton_type,unsigned int NETA,const double ETA[],unsigned i
     hEff_pt->SetMarkerColor(kBlack);
     
     hEff_eta->GetXaxis()->SetTitle("|#eta|");
-    hEff_eta->GetYaxis()->SetRangeUser(0,1);
+    hEff_eta->GetYaxis()->SetRangeUser(0,0.5);
     
     hEff_pt->GetXaxis()->SetTitle("p_{T} [GeV]");
-    hEff_pt->GetYaxis()->SetRangeUser(0,1);
+    hEff_pt->GetYaxis()->SetRangeUser(0,0.5);
     
     if(lepton_type=="El")
     {
