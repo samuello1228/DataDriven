@@ -239,8 +239,10 @@ void processEvents(
 		}
 		else
 		{
-			weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
-			//weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
+			//weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF;
+
+			//For 9771f2ed ntuple
+			weight = mEvts->evt.weight * mEvts->evt.pwt * mEvts->evt.ElSF * mEvts->evt.MuSF * mEvts->evt.BtagSF * mEvts->evt.JvtSF * mEvts->evt.trigSF;
 		}
 		
 		double mll = mEvts->l12.m;
