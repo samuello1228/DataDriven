@@ -31,7 +31,7 @@ int get_truth()
 	vector<string> elec_type;
 	elec_type.clear();
 	elec_type.push_back( "signal" );
-	elec_type.push_back( "baseline" );
+	//elec_type.push_back( "baseline" );
 	for (unsigned int j = 0; j < elec_type.size(); j++)
 	{
 		string file   = string("../../run/checks/mc_") + elec_type[j] + string("_80_100_20_20.root");

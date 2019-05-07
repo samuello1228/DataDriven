@@ -42,11 +42,11 @@ int fit()
 	// data based on signal electron
 	doFit(true, "signal");
 	// data based on baseline electron
-	doFit(true, "baseline");
+	//doFit(true, "baseline");
 	// mc based on signal electron
 	doFit(false, "signal");
 	// mc based on baseline electron
-	doFit(false, "baseline");
+	//doFit(false, "baseline");
 	
 	return 0;
 }
