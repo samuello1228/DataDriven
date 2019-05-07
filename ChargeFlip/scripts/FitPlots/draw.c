@@ -189,8 +189,8 @@ int draw()
 			data[NUM_DATA-1][i][j] = data[0][i][j];
 			// only sys.
 			double MCTruthError = (mc[0][i][j] - mc[1][i][j]) /mc[0][i][j] *data[0][i][j];
-			data_err[NUM_DATA-1][i][j] = diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
-			//data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
+			//data_err[NUM_DATA-1][i][j] = diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
+			data_err[NUM_DATA-1][i][j] = data_err[0][i][j]*data_err[0][i][j] + diff[i][j]*diff[i][j] + MCTruthError*MCTruthError;
 			data_err[NUM_DATA-1][i][j] = std::sqrt( data_err[NUM_DATA-1][i][j] );
 			gd_data[NUM_DATA - 1][i]->SetPoint(j, x[j], data[NUM_DATA-1][i][j]);
 			gd_data[NUM_DATA - 1][i]->SetPointError(j, x_err[j], data_err[NUM_DATA-1][i][j]);
@@ -254,7 +254,7 @@ int draw()
 	pt->AddText("Rate from likelihood (#times10^{-3}) (sys.)");
 	pt->Draw();
 	c2->Modified();
-	c2->SaveAs("./plots/data_cf_rate_sys.eps");
+	c2->SaveAs("./plots/data_cf_rate_tot.eps");
 
 	gStyle->SetPadRightMargin(0.05);
 	gStyle->SetPadTopMargin(0.05);
