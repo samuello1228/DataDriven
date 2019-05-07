@@ -1,2 +1,2 @@
-./re_weight mc ../share/mc.txt
-#./re_weight mc ../share/mc_update.txt
+#./re_weight mc ../share/mc.txt
+./re_weight mc ../share/mc_update2.txt
