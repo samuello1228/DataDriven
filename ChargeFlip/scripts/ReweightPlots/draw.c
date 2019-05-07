@@ -57,7 +57,7 @@ int    LINEWIDTH   = 2;
 int draw()
 {
 	SetStyle();
-	drawPlots(true);
+	//drawPlots(true);
 	drawPlots(false);
 
 	return 0;
@@ -198,8 +198,8 @@ int drawPlots(bool isData)
 		}
 		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, g_ratio, leg, leg_title, hist[i].x_title);
 		
-		c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
-		//c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
+		//c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
+		c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
 		delete g_ratio;
 		delete c2;
 	}
