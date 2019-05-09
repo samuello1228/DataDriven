@@ -232,6 +232,7 @@ int draw()
 
 	TCanvas *c1 = new TCanvas("c1", "c1", 900, 900);
 	c1->SetLogx();
+	gStyle->SetPalette(57);
 	h_data_rate->Draw("TEXT45E, COLZ");
 	TPaveText *pt = new TPaveText(0.32, 0.91, 0.70, 0.96, "blNDC");
 	pt->SetBorderSize(0);
