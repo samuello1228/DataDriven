@@ -483,6 +483,16 @@ bool sigRate(susyEvts* tree, bool isMC, double treeWeight, TH1D* hCutflow)
 				double eta = fabs(tree->leps[probe_idx].eta); 
 				if(!ptEtaRequirement(pt, eta, LEP_TYPE::MUON)) continue;
 				
+				/*
+				if(pt>=120 && pt<200 && eta>=1.37 && eta<1.52)
+				{
+					cout<<"Event number: "<<tree->evt.event<<endl;
+					TChain* chain = (TChain*) tree->tree1;
+					TFile* cfile = chain->GetFile();
+					cout<<"file name: "<<cfile->GetName()<<endl;
+				}
+				*/
+				
 				//probe
 				bool isTight = tree->leps[probe_idx].lFlag & IS_SIGNAL;
 				real_mu->hLoose->Fill(pt, eta, w);
