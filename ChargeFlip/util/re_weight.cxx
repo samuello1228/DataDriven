@@ -119,6 +119,8 @@ TChain *LoadData(string file)
 		string line;
 		while (getline(in, line))
 		{
+			line = "/eos/user/c/clo/ntuple/" + line;
+			//line = "/srv/SUSY/ntuple/" + line;
 			if (gSystem->AccessPathName(line.c_str(), kFileExists)) //if file exists, return false 
 			{
 				cout << ">> File: '" << line << "' DO NOT exist!" << endl;
