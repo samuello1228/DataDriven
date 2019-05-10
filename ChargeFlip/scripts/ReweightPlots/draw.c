@@ -19,6 +19,9 @@
 #include "TStyle.h"
 #include "TROOT.h"
 
+#include "AtlasLabels.C"
+#include "AtlasStyle.C"
+
 using namespace std;
 #define PRINT(x) {std::cout << #x << " = " << x << std::endl;}
 
@@ -287,7 +290,12 @@ void DrawDataMC(TCanvas *c,
 	leg->AddEntry(h_data, leg_entry_1.c_str(), leg_format_1.c_str());
 	leg->AddEntry(g_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
 	leg->Draw();
-
+	
+	//ATLAS Label
+	ATLASLabel(0.01,0.96,"Work in progress");
+	TLatex lt1;
+	lt1.DrawLatexNDC(0.54,0.955,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+	
 	pad_1->Update();
 
 	pad_2->cd();
