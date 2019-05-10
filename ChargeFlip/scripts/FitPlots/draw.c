@@ -21,6 +21,9 @@
 #include "TFile.h"
 #include "TROOT.h"
 
+#include "AtlasLabels.C"
+#include "AtlasStyle.C"
+
 using namespace std;
 
 const double VETAS[] = {0, 0.5, 1, 1.37, 1.52, 1.8, 2.0, 2.47};
@@ -38,7 +41,7 @@ void loadvalue(string path);
 
 double data[NUM_DATA][NPT][NETA]; 
 double data_err[NUM_DATA][NPT][NETA];
-double mc[NUM_MC][NPT][NETA];     
+double mc[NUM_MC][NPT][NETA];
 double mc_err[NUM_MC][NPT][NETA];
 
 double diff[NPT][NETA];      //the max deviations from fitted values
@@ -241,6 +244,14 @@ int draw()
 	pt->SetTextFont(42);
 	pt->AddText("Rate from likelihood (#times10^{-3}) (stat.)");
 	pt->Draw();
+	
+	{
+		//ATLAS Label
+		ATLASLabel(0.01,0.96,"Work in progress");
+		TLatex lt1;
+		lt1.DrawLatexNDC(0.54,0.955,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+	}
+	
 	c1->Modified();
 	c1->SaveAs("./plots/data_cf_rate_stat.eps");
 
@@ -254,6 +265,14 @@ int draw()
 	pt->SetTextFont(42);
 	pt->AddText("Rate from likelihood (#times10^{-3}) (sys.)");
 	pt->Draw();
+	
+	{
+		//ATLAS Label
+		ATLASLabel(0.01,0.96,"Work in progress");
+		TLatex lt1;
+		lt1.DrawLatexNDC(0.54,0.955,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+	}
+	
 	c2->Modified();
 	c2->SaveAs("./plots/data_cf_rate_tot.eps");
 
@@ -311,6 +330,12 @@ int draw()
 		leg->AddEntry((TObject*)0, "", "");
 		leg->AddEntry(gd_data[4][i], "SR:80-100 GeV, SB:0 GeV",   "lep");
 		leg->Draw();
+		
+		//ATLAS Label
+		ATLASLabel(0.25,0.95,"Work in progress");
+		TLatex lt1;
+		lt1.DrawLatexNDC(0.25,0.9,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+		
 		c3[i]->Update();	
 		c3[i]->SaveAs(Form("./plots/data_cf_comparison_%d.eps", i));
 	}
@@ -427,6 +452,12 @@ void DrawDataMC(TCanvas *c,
 	leg->AddEntry((TObject*)0, "", "");
 	leg->AddEntry(g_mc,   leg_entry_2.c_str(), leg_format_2.c_str());
 	leg->Draw();
+	
+	//ATLAS Label
+	ATLASLabel(0.25,0.95,"Work in progress");
+	TLatex lt1;
+	lt1.DrawLatexNDC(0.25,0.9,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+	
 	pad_1->Update();
 
 	pad_2->cd();
