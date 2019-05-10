@@ -1,0 +1,8 @@
+*eps-converted-to.pdf
+.DS_Store
+*.d
+*.so
+*.pcm
+rcSetup*
+.RootCoreBin
+RootCoreBin
