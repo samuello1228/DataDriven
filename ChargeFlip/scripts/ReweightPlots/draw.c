@@ -131,83 +131,83 @@ int drawPlots(bool isData)
 		
 		if(hist[i].o_name != "mll_unweighted")
 		{
-		int nbin = hist[i].h_mc->GetNbinsX();
-		hist[i].g_mc = new TGraphAsymmErrors(nbin);
-		
-		TGraphAsymmErrors* g_ratio = new TGraphAsymmErrors(nbin);
-		
-		for (int j = 0; j < nbin; j++)
-		{
-			//set point
-			double x = hist[i].h_mc->GetBinCenter(j+1);
-			double y = hist[i].h_mc->GetBinContent(j+1);
-			hist[i].g_mc->SetPoint(j,x,y);
+			int nbin = hist[i].h_mc->GetNbinsX();
+			hist[i].g_mc = new TGraphAsymmErrors(nbin);
 			
-			//set point error
-			double xerr_down = hist[i].h_mc->GetBinWidth(j+1) /2;
-			double xerr_up = hist[i].h_mc->GetBinWidth(j+1) /2;
+			TGraphAsymmErrors* g_ratio = new TGraphAsymmErrors(nbin);
 			
-			double y_down = hist[i].h_mc_down->GetBinContent(j+1);
-			double y_up = hist[i].h_mc_up->GetBinContent(j+1);
-			
-			if(0<=y_down && y_down <= y && y <= y_up)
+			for (int j = 0; j < nbin; j++)
 			{
-			}
-			else if(y_down > y && y > y_up && y_up<0)
-			{
-				y_down = hist[i].h_mc_up->GetBinContent(j+1);
-				y_up = hist[i].h_mc_down->GetBinContent(j+1);
-			}
-			else
-			{
-				cout<<"Error!!!!!!!"<<endl;
-				cout<<y_down<<", "<<y<<", "<<y_up<<endl;
-			}
-			
-			double yerr_down = y - y_down;
-			double yerr_up = y_up - y;
-			//cout<<xerr_down<<", "<<x<<", "<<xerr_up<<"; "<<yerr_down<<", "<<y<<", "<<yerr_up<<endl;
-			hist[i].g_mc->SetPointError(j,xerr_down,xerr_up,yerr_down,yerr_up);
-			
-			//set ratio plot
-			double y_ss = hist[i].h_data->GetBinContent(j+1);
-			double y_ss_error = hist[i].h_data->GetBinError(j+1);
-			double y_ss_down = y_ss - y_ss_error;
-			double y_ss_up = y_ss + y_ss_error;
-			
-			if(y_down>0 && y_ss_down>0)
-			{
-				double ratio = y/y_ss;
-				g_ratio->SetPoint(j,x,ratio);
+				//set point
+				double x = hist[i].h_mc->GetBinCenter(j+1);
+				double y = hist[i].h_mc->GetBinContent(j+1);
+				hist[i].g_mc->SetPoint(j,x,y);
 				
-				double ratio_down = y_down/y_ss_up;
-				double ratio_up = y_up/y_ss_down;
-				g_ratio->SetPointError(j,xerr_down,xerr_up, ratio - ratio_down, ratio_up - ratio);
+				//set point error
+				double xerr_down = hist[i].h_mc->GetBinWidth(j+1) /2;
+				double xerr_up = hist[i].h_mc->GetBinWidth(j+1) /2;
+				
+				double y_down = hist[i].h_mc_down->GetBinContent(j+1);
+				double y_up = hist[i].h_mc_up->GetBinContent(j+1);
+				
+				if(0<=y_down && y_down <= y && y <= y_up)
+				{
+				}
+				else if(y_down > y && y > y_up && y_up<0)
+				{
+					y_down = hist[i].h_mc_up->GetBinContent(j+1);
+					y_up = hist[i].h_mc_down->GetBinContent(j+1);
+				}
+				else
+				{
+					cout<<"Error!!!!!!!"<<endl;
+					cout<<y_down<<", "<<y<<", "<<y_up<<endl;
+				}
+				
+				double yerr_down = y - y_down;
+				double yerr_up = y_up - y;
+				//cout<<xerr_down<<", "<<x<<", "<<xerr_up<<"; "<<yerr_down<<", "<<y<<", "<<yerr_up<<endl;
+				hist[i].g_mc->SetPointError(j,xerr_down,xerr_up,yerr_down,yerr_up);
+				
+				//set ratio plot
+				double y_ss = hist[i].h_data->GetBinContent(j+1);
+				double y_ss_error = hist[i].h_data->GetBinError(j+1);
+				double y_ss_down = y_ss - y_ss_error;
+				double y_ss_up = y_ss + y_ss_error;
+				
+				if(y_down>0 && y_ss_down>0)
+				{
+					double ratio = y/y_ss;
+					g_ratio->SetPoint(j,x,ratio);
+					
+					double ratio_down = y_down/y_ss_up;
+					double ratio_up = y_up/y_ss_down;
+					g_ratio->SetPointError(j,xerr_down,xerr_up, ratio - ratio_down, ratio_up - ratio);
+				}
+				else
+				{
+					g_ratio->SetPoint(j,x,-99);
+					g_ratio->SetPointError(j,xerr_down,xerr_up,0,0);
+				}
+			}
+			
+			TCanvas *c2 = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
+			TLegend *leg = new TLegend(LEG_LEFT_X, LEG_LEFT_Y, LEG_RIGHT_X, LEG_RIGHT_Y);
+			string leg_title;
+			if (isData)
+			{
+				leg_title = "Data";
 			}
 			else
 			{
-				g_ratio->SetPoint(j,x,-99);
-				g_ratio->SetPointError(j,xerr_down,xerr_up,0,0);
+				leg_title = "MC";
 			}
-		}
-		
-		TCanvas *c2 = new TCanvas(Form("c%d%d", isData, i), "c", 900, 900);
-		TLegend *leg = new TLegend(LEG_LEFT_X, LEG_LEFT_Y, LEG_RIGHT_X, LEG_RIGHT_Y);
-		string leg_title;
-	   	if (isData)
-		{
-			leg_title = "Data";
-		}
-		else 
-		{
-			leg_title = "MC";
-		}
-		DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, g_ratio, leg, leg_title, hist[i].x_title);
-		
-		//c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
-		c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
-		delete g_ratio;
-		delete c2;
+			DrawDataMC(c2, hist[i].isLogy, hist[i].h_data, hist[i].h_mc, hist[i].g_mc, g_ratio, leg, leg_title, hist[i].x_title);
+			
+			//c2->Print((output + hist[i].o_name + ".eps").c_str(),"eps");
+			c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
+			delete g_ratio;
+			delete c2;
 		}
 		else
 		{
