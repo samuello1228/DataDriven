@@ -60,7 +60,7 @@ int    LINEWIDTH   = 2;
 int draw()
 {
 	SetStyle();
-	//drawPlots(true);
+	drawPlots(true);
 	drawPlots(false);
 
 	return 0;
