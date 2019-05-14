@@ -113,6 +113,7 @@ int drawPlots(bool isData)
 	hist.push_back( VariableData("subleading #eta",                   "eta_2", false));
 	hist.push_back( VariableData("leading #phi",                      "phi_1", false));
 	hist.push_back( VariableData("subleading #phi",                   "phi_2", false));
+	hist.push_back( VariableData("m_{ll} (GeV)",                      "mll_unweighted"));
 
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
@@ -128,6 +129,8 @@ int drawPlots(bool isData)
 		hName2 = hName + "_ss";
 		hist[i].h_data = (TH1D*) f->Get(hName2.Data());
 		
+		if(hist[i].o_name != "mll_unweighted")
+		{
 		int nbin = hist[i].h_mc->GetNbinsX();
 		hist[i].g_mc = new TGraphAsymmErrors(nbin);
 		
@@ -205,6 +208,46 @@ int drawPlots(bool isData)
 		c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
 		delete g_ratio;
 		delete c2;
+		}
+		else
+		{
+			hist[i].h_mc->SetMinimum(10);
+			hist[i].h_mc->SetMaximum(10000000);
+			hist[i].h_mc->SetLineColor(kGreen);
+			hist[i].h_data->SetLineColor(kBlue);
+			
+			hist[i].h_mc->GetYaxis()->SetTitle("Events");
+			hist[i].h_mc->GetXaxis()->SetTitle(hist[i].x_title.c_str());
+			
+			TCanvas *c2 = new TCanvas();
+			TPad* pad1 = new TPad("pad1","pad1",0,0,1,1);
+			pad1->SetLogy(true);
+			
+			TLegend *leg = new TLegend(0.65, 0.7, 0.75, 0.8);
+			leg->SetTextFont(42);
+			leg->SetTextSize(0.04);
+			leg->SetHeader("Data");
+			leg->AddEntry(hist[i].h_mc,   "Observed OS");
+			leg->AddEntry(hist[i].h_data, "Observed SS");
+			
+			c2->cd();
+			pad1->Draw();
+			pad1->cd();
+			hist[i].h_mc->Draw("hist e2");
+			hist[i].h_data->Draw("hist e2 same");
+			leg->Draw();
+			
+			//ATLAS Label
+			ATLASLabel(0.55,0.88,"Work in progress");
+			TLatex lt1;
+			lt1.DrawLatexNDC(0.55,0.83,"#sqrt{#it{s}} = 13 TeV, 36.1 fb^{-1}");
+			
+			c2->Print((output + hist[i].o_name + ".pdf").c_str(),"pdf");
+			
+			delete leg;
+			delete pad1;
+			delete c2;
+		}
 	}
 
 	return 0;
