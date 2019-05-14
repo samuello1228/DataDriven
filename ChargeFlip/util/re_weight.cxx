@@ -193,6 +193,7 @@ void processEvents(
 	hist.push_back( Variable("pt_2",50,0,500) );
 	hist.push_back( Variable("phi_1",25,-TMath::Pi(),TMath::Pi()) );
 	hist.push_back( Variable("phi_2",25,-TMath::Pi(),TMath::Pi()) );
+	hist.push_back( Variable("mll_unweighted",50,20,200) );
 
 	for (unsigned int i = 0; i < hist.size(); i++)
 	{
@@ -278,6 +279,7 @@ void processEvents(
 		hist[4].var = e2_pt;
 		hist[5].var = e1_phi;
 		hist[6].var = e2_phi;
+		hist[7].var = mll;
 
 		if (e1_charge == e2_charge) //ss event
 		{
@@ -339,9 +341,16 @@ void processEvents(
 
 			for (unsigned int i = 0; i < hist.size(); i++)
 			{
-				hist[i].h_nom->Fill(hist[i].var, weight_nom);
-				hist[i].h_down->Fill(hist[i].var, weight_down);
-				hist[i].h_up->Fill(hist[i].var, weight_up);
+				if(hist[i].name != "mll_unweighted")
+				{
+					hist[i].h_nom->Fill(hist[i].var, weight_nom);
+					hist[i].h_down->Fill(hist[i].var, weight_down);
+					hist[i].h_up->Fill(hist[i].var, weight_up);
+				}
+				else
+				{
+					hist[i].h_nom->Fill(hist[i].var, weight);
+				}
 			}
 
 			h_m_pt_1->Fill(mll, e1_pt, weight_nom);
